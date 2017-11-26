@@ -1,0 +1,74 @@
+{
+  "configVersion": 1,
+  "index": "/index.html",
+  "appData": {
+    "name": "Angular Universal PWA + CLI Starter"
+  },
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/inline.78080fb9f5bc2bab65e6.bundle.js",
+        "/main.d76eff2806b7a24b948e.bundle.js",
+        "/polyfills.9095dbf820801e799156.bundle.js",
+        "/styles.f0d6ce693681268a31ec.bundle.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/logo-512x512.png"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "fonts",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [],
+      "patterns": [
+        "https:\\/\\/fonts\\.googleapis\\.com\\/.*",
+        "https:\\/\\/fonts\\.gstatic\\.com\\/.*"
+      ]
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-freshness",
+      "patterns": [
+        "\\/blog"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "timeoutMs": 10000,
+      "version": 1
+    },
+    {
+      "name": "api-performance",
+      "patterns": [
+        "\\/about"
+      ],
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/inline.78080fb9f5bc2bab65e6.bundle.js": "f60bd90a9c02bb00a1df810cf5dbb3046e8fd2ed",
+    "/assets/logo-512x512.png": "11fbc7458515abd3fe1fb39d5ab9e4c77d9ec3bb",
+    "/main.d76eff2806b7a24b948e.bundle.js": "5c5dc1a0f0c480f9e7d4964908feed0199bba6fb",
+    "/polyfills.9095dbf820801e799156.bundle.js": "75c81aaf4ab86e2b32306d5ea2cc5c79653c7abc",
+    "/styles.f0d6ce693681268a31ec.bundle.css": "38850f233938971536bf3030440ac17cddfbb535",
+    "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
+    "/index.html": "ca8103bc299544921199f303b4e8cc224d534300"
+  }
+}
