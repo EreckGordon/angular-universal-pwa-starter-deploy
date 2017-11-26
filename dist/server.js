@@ -16,7 +16,6 @@ const cors = require("cors");
 const path = require("path");
 const compression = require("compression");
 const app_module_1 = require("./modules/app.module");
-const server = express();
 const DIST_FOLDER = path.join(process.cwd(), 'dist');
 const DIST_BROWSER_FOLDER = path.join(DIST_FOLDER, 'dist-browser');
 const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require(path.join(DIST_FOLDER, 'dist-bridge', 'main.bundle'));
@@ -27,6 +26,7 @@ const configuredNgExpressEngine = express_engine_1.ngExpressEngine({
         module_map_ngfactory_loader_1.provideModuleMap(LAZY_MODULE_MAP)
     ]
 });
+const server = express();
 server.engine('html', configuredNgExpressEngine);
 server.set('view engine', 'html');
 server.set('views', DIST_BROWSER_FOLDER);

@@ -12,7 +12,7 @@
     "prep-front-end": "ng build --prod && ng build --prod --app 1 --output-hashing=false",
     "prep-server": "./node_modules/.bin/tsc -p nestjs.tsconfig.json",
     "copy-needed-files-to-deploy-folder": "node copy-to-deploy-folder.js",
-    "deploy-to-github": "!!!!!!!!tbd",
+    "deploy-to-github": "node deploy-to-github.js",
     "deploy": "npm run prep-front-end && npm run prep-server && npm run copy-needed-files-to-deploy-folder && npm run deploy-to-github",
     "dev-server": "node server/index.js",
     "prep-dev-server": "npm run prep-front-end && npm run dev-server",
@@ -63,7 +63,7 @@
     "zone.js": "^0.8.17"
   },
   "devDependencies": {
-    "@angular/cli": "^1.6.0-beta.2",
+    "@angular/cli": "^1.6.0-rc.0",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
     "@angular/platform-server": "^5.0.0",
@@ -91,10 +91,6 @@
     "ts-helpers": "^1.1.2",
     "ts-node": "^3.3.0",
     "tslint": "~5.3.2",
-    "typescript": "~2.5.0",
-    "uglifyjs-webpack-plugin": "^1.0.1",
-    "webpack": "^3.8.1",
-    "webpack-filter-warnings-plugin": "^1.1.0",
-    "webpack-node-externals": "^1.6.0"
+    "typescript": "~2.5.0"
   }
 }
