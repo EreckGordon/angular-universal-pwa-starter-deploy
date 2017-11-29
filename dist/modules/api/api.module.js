@@ -11,7 +11,12 @@ const auth_module_1 = require("../auth/auth.module");
 const article_module_1 = require("../article/article.module");
 const api_service_1 = require("./api.service");
 const api_controller_1 = require("./api.controller");
+const middlewares_1 = require("../common/middlewares");
 let APIModule = class APIModule {
+    configure(consumer) {
+        consumer.apply([middlewares_1.RetrieveUserIdFromRequestMiddleware]).forRoutes(api_controller_1.APIController);
+        consumer.apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware]).forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
+    }
 };
 APIModule = __decorate([
     common_1.Module({

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("zone.js/dist/zone-node");
 require("reflect-metadata");
@@ -45,8 +53,10 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(cookieParser());
 server.use(cors(options));
 server.options("*", cors(options));
-async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.ApplicationModule, server);
-    await app.listen(8000);
+function bootstrap() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const app = yield core_1.NestFactory.create(app_module_1.ApplicationModule, server);
+        yield app.listen(8000);
+    });
 }
 bootstrap();
