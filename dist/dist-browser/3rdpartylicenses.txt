@@ -71,14 +71,18 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 MIT
 MIT
 
-@nguniversal/common@5.0.0-beta.5
-MIT
-MIT
-
 @angular/core@5.0.3
 MIT
 MIT
 
 @angular/platform-browser@5.0.3
+MIT
+MIT
+
+@nguniversal/common@5.0.0-beta.5
+MIT
+MIT
+
+@angular/router@5.0.3
 MIT
 MIT
