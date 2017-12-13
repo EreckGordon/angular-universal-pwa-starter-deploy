@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -18,35 +21,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const auth_service_1 = require("../../auth/auth.service");
-let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddleware {
-    constructor(authService) {
-        this.authService = authService;
-    }
-    resolve() {
+let HelloWorldController = class HelloWorldController {
+    helloWorld(res, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const jwt = req.cookies["SESSIONID"];
-                if (jwt) {
-                    try {
-                        const payload = yield this.authService.decodeJwt(jwt);
-                        req["user"] = payload;
-                        next();
-                    }
-                    catch (err) {
-                        console.log("Error: Could not extract user from request:", err.message);
-                        next();
-                    }
-                }
-                else {
-                    next();
-                }
-            });
+            console.log(body);
+            res.status(common_1.HttpStatus.OK).json({ hello: "world" });
         });
     }
 };
-RetrieveUserIdFromRequestMiddleware = __decorate([
-    common_1.Middleware(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
-], RetrieveUserIdFromRequestMiddleware);
-exports.RetrieveUserIdFromRequestMiddleware = RetrieveUserIdFromRequestMiddleware;
+__decorate([
+    common_1.Post(),
+    __param(0, common_1.Res()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], HelloWorldController.prototype, "helloWorld", null);
+HelloWorldController = __decorate([
+    common_1.Controller('hello-world')
+], HelloWorldController);
+exports.HelloWorldController = HelloWorldController;

@@ -8,9 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const database_module_1 = require("../database/database.module");
+const auth_controller_1 = require("./auth.controller");
 const auth_providers_1 = require("./auth.providers");
 const auth_service_1 = require("./auth.service");
+const middlewares_1 = require("../common/middlewares");
 let AuthModule = class AuthModule {
+    configure(consumer) {
+        consumer.apply([middlewares_1.RetrieveUserIdFromRequestMiddleware]).forRoutes(auth_controller_1.AuthController);
+        consumer.apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware]).forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
+    }
 };
 AuthModule = __decorate([
     common_1.Module({
@@ -19,6 +25,7 @@ AuthModule = __decorate([
             ...auth_providers_1.authProviders,
             auth_service_1.AuthService
         ],
+        controllers: [auth_controller_1.AuthController],
         exports: [auth_service_1.AuthService]
     })
 ], AuthModule);

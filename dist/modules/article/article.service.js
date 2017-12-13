@@ -29,6 +29,8 @@ let ArticleService = class ArticleService {
     }
     findAllArticles() {
         return __awaiter(this, void 0, void 0, function* () {
+            //stream wip
+            //this.articleRepository.queryRunner.stream(`SELECT * FROM user`,);
             return yield this.articleRepository.find();
         });
     }
