@@ -27,41 +27,35 @@ const roles_decorator_1 = require("../common/decorators/roles.decorator");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
+        this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
     }
     login(res, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const loginResult = yield this.authService.login(body);
+            const loginResult = yield this.authService.loginEmailAndPasswordUser(body);
             if (loginResult.apiCallResult) {
                 const { user, sessionToken, csrfToken } = loginResult.result;
-                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: true });
+                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
                 res.cookie("XSRF-TOKEN", csrfToken);
-                res.status(200).json({ id: user.id, email: user.email, roles: user.roles });
+                res.status(200).json({ id: user.id, email: body.email, roles: user.roles });
             }
             else {
                 res.status(401).json(loginResult.result.error);
             }
         });
     }
-    logout(res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield res.clearCookie("SESSIONID");
-            yield res.clearCookie("XSRF-TOKEN");
-            return res.sendStatus(200);
-        });
-    }
     createUser(res, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const createUserResult = yield this.authService.createUser(body);
+            const createUserResult = yield this.authService.createEmailAndPasswordUser(body);
             if (createUserResult.apiCallResult) {
                 const { user, sessionToken, csrfToken } = createUserResult.result;
-                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: true });
+                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
                 res.cookie("XSRF-TOKEN", csrfToken);
-                res.status(200).json({ id: user.id, email: user.email, roles: user.roles });
+                res.status(200).json({ id: user.id, email: user.emailAndPasswordProvider.email, roles: user.roles });
             }
             else {
                 switch (createUserResult.result.error) {
                     case "Email already in use":
-                        res.sendStatus(409).json({ error: 'Email already in use' });
+                        res.status(409).json({ error: 'Email already in use' });
                         break;
                     case "Error creating new user":
                         res.sendStatus(500);
@@ -73,14 +67,28 @@ let AuthController = class AuthController {
             }
         });
     }
+    logout(res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield res.clearCookie("SESSIONID");
+            yield res.clearCookie("XSRF-TOKEN");
+            return res.sendStatus(200);
+        });
+    }
 };
 __decorate([
-    common_1.Post('login'),
+    common_1.Post('login-email-and-password-user'),
     __param(0, common_1.Res()), __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    common_1.Post('create-email-and-password-user'),
+    __param(0, common_1.Res()), __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "createUser", null);
 __decorate([
     common_1.Post('logout'),
     roles_decorator_1.Roles('user'),
@@ -89,13 +97,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
-__decorate([
-    common_1.Post('create-user'),
-    __param(0, common_1.Res()), __param(1, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], AuthController.prototype, "createUser", null);
 AuthController = __decorate([
     common_1.Controller('auth'),
     common_1.UseGuards(roles_guard_1.RolesGuard),

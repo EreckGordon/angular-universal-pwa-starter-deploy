@@ -10,35 +10,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
-let User = class User {
+let EmailAndPasswordProvider = class EmailAndPasswordProvider {
 };
 __decorate([
     typeorm_1.PrimaryGeneratedColumn(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    typeorm_1.CreateDateColumn(),
-    __metadata("design:type", Date)
-], User.prototype, "createdDate", void 0);
+], EmailAndPasswordProvider.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], User.prototype, "isAnonymous", void 0);
+    __metadata("design:type", String)
+], EmailAndPasswordProvider.prototype, "email", void 0);
 __decorate([
-    typeorm_1.Column('simple-array'),
-    __metadata("design:type", Array)
-], User.prototype, "roles", void 0);
-__decorate([
-    typeorm_1.Column({ nullable: true }),
-    __metadata("design:type", Number)
-], User.prototype, "emailAndPasswordProviderId", void 0);
-__decorate([
-    typeorm_1.OneToOne(type => email_and_password_provider_entity_1.EmailAndPasswordProvider, { cascade: true }),
-    typeorm_1.JoinColumn(),
-    __metadata("design:type", email_and_password_provider_entity_1.EmailAndPasswordProvider)
-], User.prototype, "emailAndPasswordProvider", void 0);
-User = __decorate([
+    typeorm_1.Column(),
+    __metadata("design:type", String)
+], EmailAndPasswordProvider.prototype, "passwordHash", void 0);
+EmailAndPasswordProvider = __decorate([
     typeorm_1.Entity()
-], User);
-exports.User = User;
+], EmailAndPasswordProvider);
+exports.EmailAndPasswordProvider = EmailAndPasswordProvider;

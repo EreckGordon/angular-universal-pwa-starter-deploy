@@ -23,6 +23,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./user.entity");
+const email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
 const util = require('util');
 const fs = require("fs");
 const path = require("path");
@@ -35,10 +36,11 @@ const signJwt = util.promisify(jwt.sign);
 const RSA_PRIVATE_KEY = fs.readFileSync(path.join(process.cwd(), 'private.key'));
 const RSA_PUBLIC_KEY = fs.readFileSync(path.join(process.cwd(), 'public.key'));
 let AuthService = class AuthService {
-    constructor(userRepository) {
+    constructor(userRepository, emailAndPasswordProviderRepository) {
         this.userRepository = userRepository;
+        this.emailAndPasswordProviderRepository = emailAndPasswordProviderRepository;
     }
-    login(body) {
+    loginEmailAndPasswordUser(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const credentials = body;
             const user = yield this.findUserByEmail(credentials.email);
@@ -69,7 +71,7 @@ let AuthService = class AuthService {
             }
         });
     }
-    createUser(body) {
+    createEmailAndPasswordUser(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const credentials = body;
             const usernameTaken = yield this.emailTaken(credentials.email);
@@ -84,7 +86,7 @@ let AuthService = class AuthService {
             }
             else {
                 try {
-                    const createUserResult = yield this.createUserAndSession(credentials);
+                    const createUserResult = yield this.createEmailAndPasswordUserAndSession(credentials);
                     const result = {
                         apiCallResult: true,
                         result: {
@@ -107,7 +109,16 @@ let AuthService = class AuthService {
     }
     findUserByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepository.findOne({ email });
+            let currentProvider = yield this.emailAndPasswordProviderRepository.findOne({
+                where: { email },
+                cache: true // default 1000 = 1 second
+            });
+            if (currentProvider === undefined)
+                return Promise.resolve(undefined);
+            return yield this.userRepository.findOne({
+                where: { emailAndPasswordProviderId: currentProvider.id },
+                cache: true
+            });
         });
     }
     emailTaken(email) {
@@ -115,20 +126,23 @@ let AuthService = class AuthService {
             return (yield this.findUserByEmail(email)) === undefined ? false : true;
         });
     }
-    addUserToDatabase(email, passwordHash) {
+    addEmailAndPasswordUserToDatabase(email, passwordHash) {
         return __awaiter(this, void 0, void 0, function* () {
+            const emailAndPasswordProvider = new email_and_password_provider_entity_1.EmailAndPasswordProvider();
+            emailAndPasswordProvider.email = email;
+            emailAndPasswordProvider.passwordHash = passwordHash;
             const user = new user_entity_1.User();
-            user.email = email;
-            user.passwordHash = passwordHash;
+            user.isAnonymous = false;
             user.roles = ['user'];
+            user.emailAndPasswordProvider = emailAndPasswordProvider;
             return yield this.userRepository.save(user);
         });
     }
-    createUserAndSession(credentials) {
+    createEmailAndPasswordUserAndSession(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const passwordHash = yield argon2.hash(credentials.password);
-                const user = yield this.addUserToDatabase(credentials.email, passwordHash);
+                const user = yield this.addEmailAndPasswordUserToDatabase(credentials.email, passwordHash);
                 const sessionToken = yield this.createSessionToken(user);
                 const csrfToken = yield this.createCsrfToken();
                 const result = { user, sessionToken, csrfToken };
@@ -142,7 +156,7 @@ let AuthService = class AuthService {
     loginAndCreateSession(credentials, user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const sessionToken = yield this.attemptLogin(credentials, user);
+                const sessionToken = yield this.attemptLoginWithEmailAndPassword(credentials, user);
                 const csrfToken = yield this.createCsrfToken();
                 const result = { sessionToken, csrfToken };
                 return result;
@@ -152,9 +166,18 @@ let AuthService = class AuthService {
             }
         });
     }
-    attemptLogin(credentials, user) {
+    findEmailProviderById(providerId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const isPasswordValid = yield argon2.verify(user.passwordHash, credentials.password);
+            return yield this.emailAndPasswordProviderRepository.findOne({
+                where: { id: providerId },
+                cache: true
+            });
+        });
+    }
+    attemptLoginWithEmailAndPassword(credentials, user) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let emailProvider = yield this.findEmailProviderById(user.emailAndPasswordProviderId);
+            const isPasswordValid = yield argon2.verify(emailProvider.passwordHash, credentials.password);
             if (!isPasswordValid) {
                 throw new Error("Password Invalid");
             }
@@ -194,6 +217,8 @@ let AuthService = class AuthService {
 AuthService = __decorate([
     common_1.Component(),
     __param(0, common_1.Inject('UserRepositoryToken')),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __param(1, common_1.Inject('EmailAndPasswordProviderRepositoryToken')),
+    __metadata("design:paramtypes", [typeorm_1.Repository,
+        typeorm_1.Repository])
 ], AuthService);
 exports.AuthService = AuthService;

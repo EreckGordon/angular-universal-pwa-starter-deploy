@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require('dotenv').config();
 require("zone.js/dist/zone-node");
 require("reflect-metadata");
 require("core-js/es6/reflect");
