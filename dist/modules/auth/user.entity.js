@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
+const email_and_password_provider_entity_1 = require("./email-and-password/email-and-password-provider.entity");
 let User = class User {
 };
 __decorate([
