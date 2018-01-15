@@ -18,10 +18,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
+const security_service_1 = require("../security/security.service");
 const auth_service_1 = require("../../auth/auth.service");
 let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddleware {
-    constructor(authService) {
+    constructor(securityService, authService) {
+        this.securityService = securityService;
         this.authService = authService;
+        this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
     }
     resolve() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,7 +32,22 @@ let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddlew
                 const jwt = req.cookies["SESSIONID"];
                 if (jwt) {
                     try {
-                        const payload = yield this.authService.decodeJwt(jwt);
+                        const payload = yield this.securityService.decodeJwt(jwt);
+                        if (((payload.exp * 1000) - Date.now()) < 1) {
+                            const user = yield this.authService.findUserByUuid(payload.sub);
+                            if (user !== undefined) {
+                                const sessionToken = yield this.securityService.createSessionToken({ roles: payload.roles, id: payload.sub, loginProvider: payload.loginProvider });
+                                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
+                                req["user"] = yield this.securityService.decodeJwt(sessionToken);
+                                return next();
+                            }
+                            else {
+                                console.log('user is gone from db. removing their authorizing cookies.');
+                                res.clearCookie('SESSIONID');
+                                res.clearCookie('XSRF-TOKEN');
+                                return res.sendStatus(403);
+                            }
+                        }
                         req["user"] = payload;
                         next();
                     }
@@ -47,6 +65,6 @@ let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddlew
 };
 RetrieveUserIdFromRequestMiddleware = __decorate([
     common_1.Middleware(),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [security_service_1.SecurityService, auth_service_1.AuthService])
 ], RetrieveUserIdFromRequestMiddleware);
 exports.RetrieveUserIdFromRequestMiddleware = RetrieveUserIdFromRequestMiddleware;

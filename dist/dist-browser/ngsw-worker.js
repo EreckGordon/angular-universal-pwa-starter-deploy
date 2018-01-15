@@ -116,7 +116,7 @@ class CacheTable {
     request(key) { return this.adapter.newRequest('/' + key); }
     'delete'(key) { return this.cache.delete(this.request(key)); }
     keys() {
-        return this.cache.keys().then(keys => keys.map(key => key.substr(1)));
+        return this.cache.keys().then(requests => requests.map(req => req.url.substr(1)));
     }
     read(key) {
         return this.cache.match(this.request(key)).then(res => {
@@ -536,6 +536,7 @@ class AssetGroup {
         const cache = await this.cache;
         // Start with the set of all cached URLs.
         return (await cache.keys())
+            .map(request => request.url)
             .filter(url => !this.hashes.has(url));
     }
     /**
@@ -1722,6 +1723,10 @@ class Driver {
          */
         this.latestHash = null;
         this.lastUpdateCheck = null;
+        /**
+         * Whether there is a check for updates currently scheduled due to navigation.
+         */
+        this.scheduledNavUpdateCheck = false;
         // The install event is triggered when the service worker is first installed.
         this.scope.addEventListener('install', (event) => {
             // SW code updates are separate from application updates, so code updates are
@@ -1917,6 +1922,14 @@ class Driver {
             // Since the SW is already committed to responding to the currently active request,
             // respond with a network fetch.
             return this.safeFetch(event.request);
+        }
+        // On navigation requests, check for new updates.
+        if (event.request.mode === 'navigate' && !this.scheduledNavUpdateCheck) {
+            this.scheduledNavUpdateCheck = true;
+            this.idle.schedule('check-updates-on-navigation', async () => {
+                this.scheduledNavUpdateCheck = false;
+                await this.checkForUpdate();
+            });
         }
         // Decide which version of the app to use to serve this request. This is asynchronous as in
         // some cases, a record will need to be written to disk about the assignment that is made.

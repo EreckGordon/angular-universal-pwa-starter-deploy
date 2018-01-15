@@ -11,29 +11,34 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 let AppController = class AppController {
+    constructor() {
+        this.renderCache = {};
+    }
     routesRender(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            res.render('index', { req });
+        if (this.renderCache[req.originalUrl]) {
+            return res.send(this.renderCache[req.originalUrl]);
+        }
+        res.render('index', { req }, (err, html) => {
+            // prevent caching these routes
+            if (req.originalUrl.startsWith('/admin')) {
+                return res.send(html);
+            }
+            else {
+                this.renderCache[req.originalUrl] = html;
+                return res.send(html);
+            }
         });
     }
 };
 __decorate([
     common_1.Get(),
-    __param(0, common_1.Request()), __param(1, common_1.Response()),
+    __param(0, common_1.Req()), __param(1, common_1.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], AppController.prototype, "routesRender", null);
 AppController = __decorate([
     common_1.Controller('*')

@@ -11,6 +11,9 @@ const database_module_1 = require("../database/database.module");
 const auth_controller_1 = require("./auth.controller");
 const auth_providers_1 = require("./auth.providers");
 const auth_service_1 = require("./auth.service");
+const email_and_password_service_1 = require("./email-and-password/email-and-password.service");
+const anonymous_service_1 = require("./anonymous/anonymous.service");
+const common_module_1 = require("../common/common.module");
 const middlewares_1 = require("../common/middlewares");
 let AuthModule = class AuthModule {
     configure(consumer) {
@@ -20,13 +23,17 @@ let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     common_1.Module({
-        modules: [database_module_1.DatabaseModule],
+        modules: [
+            common_module_1.CommonModule,
+            database_module_1.DatabaseModule
+        ],
         components: [
             ...auth_providers_1.authProviders,
-            auth_service_1.AuthService
+            auth_service_1.AuthService,
+            email_and_password_service_1.EmailAndPasswordService,
+            anonymous_service_1.AnonymousService
         ],
         controllers: [auth_controller_1.AuthController],
-        exports: [auth_service_1.AuthService]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
