@@ -24,6 +24,10 @@ __decorate([
     typeorm_1.Column(),
     __metadata("design:type", String)
 ], EmailAndPasswordProvider.prototype, "passwordHash", void 0);
+__decorate([
+    typeorm_1.Column({ nullable: true }),
+    __metadata("design:type", String)
+], EmailAndPasswordProvider.prototype, "passwordResetToken", void 0);
 EmailAndPasswordProvider = __decorate([
     typeorm_1.Entity()
 ], EmailAndPasswordProvider);

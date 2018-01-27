@@ -5,6 +5,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.environment = {
-    production: false
+    production: false,
+    baseUrl: 'http://localhost:8000'
 };
 //# sourceMappingURL=environment.js.map

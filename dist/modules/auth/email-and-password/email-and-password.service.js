@@ -22,10 +22,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
+const passwordValidator = require("password-validator");
 const user_entity_1 = require("../user.entity");
 const email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
 const security_service_1 = require("../../common/security/security.service");
-const passwordValidator = require("password-validator");
 let EmailAndPasswordService = class EmailAndPasswordService {
     constructor(userRepository, emailAndPasswordProviderRepository, securityService) {
         this.userRepository = userRepository;

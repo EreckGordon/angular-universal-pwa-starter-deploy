@@ -8,14 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const security_service_1 = require("./security/security.service");
+const mailgun_service_1 = require("./mailgun.service");
 let CommonModule = class CommonModule {
 };
 CommonModule = __decorate([
     common_1.Module({
         components: [
-            security_service_1.SecurityService
+            security_service_1.SecurityService,
+            mailgun_service_1.MailgunService
         ],
-        exports: [security_service_1.SecurityService]
+        exports: [
+            security_service_1.SecurityService,
+            mailgun_service_1.MailgunService
+        ]
     })
 ], CommonModule);
 exports.CommonModule = CommonModule;

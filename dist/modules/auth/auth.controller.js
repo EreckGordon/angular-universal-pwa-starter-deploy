@@ -49,7 +49,7 @@ let AuthController = class AuthController {
             else {
                 switch (createUserResult.result.error) {
                     case "Email already in use":
-                        res.status(409).json({ error: 'Email already in use' });
+                        res.status(409).json(createUserResult.result.error);
                         break;
                     case "Error creating new user":
                         res.sendStatus(500);
@@ -90,6 +90,17 @@ let AuthController = class AuthController {
             }
         });
     }
+    requestPasswordReset(req, res, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestPasswordResetResult = yield this.authService.requestPasswordReset(body);
+            if (requestPasswordResetResult.apiCallResult) {
+                res.sendStatus(200);
+            }
+            else {
+                res.status(401).json(requestPasswordResetResult.result.error);
+            }
+        });
+    }
     reauthenticateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const jwt = yield req["user"];
@@ -108,7 +119,7 @@ let AuthController = class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             res.clearCookie("SESSIONID");
             yield res.clearCookie("XSRF-TOKEN");
-            return res.sendStatus(200);
+            return res.status(200).json({ goodbye: "come again soon" });
         });
     }
     sendSuccessfulUserResult(res, authServiceResult) {
@@ -157,6 +168,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "upgradeAnonymousUser", null);
 __decorate([
+    common_1.Post('request-password-reset'),
+    __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "requestPasswordReset", null);
+__decorate([
     common_1.Post('reauthenticate'),
     __param(0, common_1.Req()), __param(1, common_1.Res()),
     __metadata("design:type", Function),
@@ -172,7 +190,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 AuthController = __decorate([
-    common_1.Controller('auth'),
+    common_1.Controller('api/auth'),
     common_1.UseGuards(roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);

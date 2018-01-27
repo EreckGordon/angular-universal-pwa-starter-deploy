@@ -10,13 +10,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
+var email_and_password_provider_entity_1 = require("./email-and-password/email-and-password-provider.entity");
 var User = /** @class */ (function () {
     function User() {
     }
     __decorate([
-        typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", Number)
+        typeorm_1.PrimaryGeneratedColumn('uuid'),
+        __metadata("design:type", String)
     ], User.prototype, "id", void 0);
     __decorate([
         typeorm_1.CreateDateColumn(),

@@ -13,16 +13,19 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var forms_1 = require("@angular/forms");
 var seo_service_1 = require("../../shared/seo.service");
+var auth_service_1 = require("../../shared/auth/services/auth.service");
 require("rxjs/add/operator/take");
 var HomeComponent = /** @class */ (function () {
-    function HomeComponent(seoService, http, fb) {
+    function HomeComponent(seoService, http, fb, authService) {
         this.seoService = seoService;
         this.http = http;
         this.fb = fb;
-        this.keywords = 'angular, universal, angular-cli, PWA, expressjs';
+        this.authService = authService;
+        this.keywords = 'angular, universal, angular-cli, PWA, nestjs';
         this.description = 'ngiso: Angular Isomorphic. It is a Progressive Web App (PWA) built with Angular Universal.';
-        this.seoService.setPageTitle('igiso - Angular Isomorphic');
+        this.seoService.setPageTitle('angular universal pwa - home');
         this.seoService.setKeywordsAndDescription(this.keywords, this.description);
+        this.user$ = authService.user$;
     }
     HomeComponent.prototype.ngOnInit = function () {
         this.loginForm = this.fb.group({
@@ -30,6 +33,10 @@ var HomeComponent = /** @class */ (function () {
             password: ['', forms_1.Validators.required]
         });
         this.createUserForm = this.fb.group({
+            email: ['', forms_1.Validators.required],
+            password: ['', forms_1.Validators.required]
+        });
+        this.upgradeAnonymousUserForm = this.fb.group({
             email: ['', forms_1.Validators.required],
             password: ['', forms_1.Validators.required]
         });
@@ -43,43 +50,33 @@ var HomeComponent = /** @class */ (function () {
             console.log(result);
         }, function (error) { return console.log(error); });
     };
-    HomeComponent.prototype.login = function () {
+    HomeComponent.prototype.loginWithEmailAndPassword = function () {
         var email = this.loginForm.value.email;
         var password = this.loginForm.value.password;
-        var headers = new http_1.HttpHeaders({ 'Content-Type': 'application/json' });
-        var options = { headers: headers, withCredentials: true };
-        var body = { email: email, password: password };
-        var loginResult = this.http.post('http://localhost:8000/auth/login-email-and-password-user', body, options)
-            .take(1).subscribe(function (result) {
-            console.log(result);
-        }, function (error) { return console.log(error); });
+        this.authService.loginWithEmailAndPassword({ email: email, password: password });
     };
     HomeComponent.prototype.logout = function () {
-        var headers = new http_1.HttpHeaders({ 'Content-Type': 'application/json' });
-        var options = { headers: headers, withCredentials: true };
-        var body = { bye: '!' };
-        var logoutResult = this.http.post('http://localhost:8000/auth/logout', body, options)
-            .take(1).subscribe(function (result) {
-            console.log(result);
-        }, function (error) { return console.log(error); });
+        this.authService.logout();
     };
-    HomeComponent.prototype.createUser = function () {
+    HomeComponent.prototype.createEmailAndPasswordUser = function () {
         var email = this.createUserForm.value.email;
         var password = this.createUserForm.value.password;
-        var headers = new http_1.HttpHeaders({ 'Content-Type': 'application/json' });
-        var options = { headers: headers, withCredentials: true };
-        var body = { email: email, password: password };
-        var createUserResult = this.http.post('http://localhost:8000/auth/create-email-and-password-user', body, options)
-            .take(1).subscribe(function (result) {
-            console.log(result);
-        }, function (error) { return console.log(error); });
+        this.authService.createEmailAndPasswordUser({ email: email, password: password });
+    };
+    HomeComponent.prototype.createAnonymousUser = function () {
+        this.authService.createAnonymousUser();
+    };
+    HomeComponent.prototype.upgradeAnonymousUserToEmailAndPasswordUser = function () {
+        var email = this.upgradeAnonymousUserForm.value.email;
+        var password = this.upgradeAnonymousUserForm.value.password;
+        this.authService.upgradeAnonymousUserToEmailAndPasswordUser({ email: email, password: password });
     };
     HomeComponent = __decorate([
         core_1.Component({
             selector: 'app-home',
             templateUrl: './home.component.html'
         }),
-        __metadata("design:paramtypes", [seo_service_1.SEOService, http_1.HttpClient, forms_1.FormBuilder])
+        __metadata("design:paramtypes", [seo_service_1.SEOService, http_1.HttpClient, forms_1.FormBuilder, auth_service_1.AuthService])
     ], HomeComponent);
     return HomeComponent;
 }());

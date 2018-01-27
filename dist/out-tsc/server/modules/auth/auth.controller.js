@@ -56,19 +56,16 @@ var AuthController = /** @class */ (function () {
         this.authService = authService;
         this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
     }
-    AuthController.prototype.login = function (res, body) {
+    AuthController.prototype.loginEmailAndPasswordUser = function (res, body) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginResult, _a, user, sessionToken, csrfToken;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var loginResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this.authService.loginEmailAndPasswordUser(body)];
                     case 1:
-                        loginResult = _b.sent();
+                        loginResult = _a.sent();
                         if (loginResult.apiCallResult) {
-                            _a = loginResult.result, user = _a.user, sessionToken = _a.sessionToken, csrfToken = _a.csrfToken;
-                            res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
-                            res.cookie("XSRF-TOKEN", csrfToken);
-                            res.status(200).json({ id: user.id, email: user.emailAndPasswordProvider.email, roles: user.roles });
+                            this.sendSuccessfulUserResult(res, loginResult.result);
                         }
                         else {
                             res.status(401).json(loginResult.result.error);
@@ -78,19 +75,16 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.createUser = function (res, body) {
+    AuthController.prototype.createEmailAndPasswordUser = function (res, body) {
         return __awaiter(this, void 0, void 0, function () {
-            var createUserResult, _a, user, sessionToken, csrfToken;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var createUserResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this.authService.createEmailAndPasswordUser(body)];
                     case 1:
-                        createUserResult = _b.sent();
+                        createUserResult = _a.sent();
                         if (createUserResult.apiCallResult) {
-                            _a = createUserResult.result, user = _a.user, sessionToken = _a.sessionToken, csrfToken = _a.csrfToken;
-                            res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
-                            res.cookie("XSRF-TOKEN", csrfToken);
-                            res.status(200).json({ id: user.id, email: user.emailAndPasswordProvider.email, roles: user.roles });
+                            this.sendSuccessfulUserResult(res, createUserResult.result);
                         }
                         else {
                             switch (createUserResult.result.error) {
@@ -110,10 +104,74 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
-    AuthController.prototype.a = function () {
+    AuthController.prototype.createAnonymousUser = function (res) {
         return __awaiter(this, void 0, void 0, function () {
+            var createAnonymousUserResult;
             return __generator(this, function (_a) {
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.authService.createAnonymousUser()];
+                    case 1:
+                        createAnonymousUserResult = _a.sent();
+                        if (createAnonymousUserResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, createAnonymousUserResult.result);
+                        }
+                        else {
+                            res.status(401).json(createAnonymousUserResult.result.error);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.upgradeAnonymousUser = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var upgradeResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.authService.upgradeAnonymousUserToEmailAndPassword(req, body)];
+                    case 1:
+                        upgradeResult = _a.sent();
+                        if (upgradeResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, upgradeResult.result);
+                        }
+                        else {
+                            switch (upgradeResult.result.error) {
+                                case "User is not anonymous":
+                                    res.status(409).json({ error: 'User is not anonymous' });
+                                    break;
+                                default:
+                                    res.status(401).json(upgradeResult.result.error);
+                                    break;
+                            }
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.reauthenticateUser = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var jwt, reauthenticateResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req["user"]];
+                    case 1:
+                        jwt = _a.sent();
+                        return [4 /*yield*/, this.authService.reauthenticateUser(jwt)];
+                    case 2:
+                        reauthenticateResult = _a.sent();
+                        if (!reauthenticateResult.apiCallResult) return [3 /*break*/, 3];
+                        this.sendUserDetails(reauthenticateResult.result.user, res);
+                        return [3 /*break*/, 5];
+                    case 3:
+                        res.clearCookie("SESSIONID");
+                        return [4 /*yield*/, res.clearCookie("XSRF-TOKEN")];
+                    case 4:
+                        _a.sent();
+                        res.status(401).json(reauthenticateResult.result.error);
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
             });
         });
     };
@@ -121,16 +179,31 @@ var AuthController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, res.clearCookie("SESSIONID")];
+                    case 0:
+                        res.clearCookie("SESSIONID");
+                        return [4 /*yield*/, res.clearCookie("XSRF-TOKEN")];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, res.clearCookie("XSRF-TOKEN")];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/, res.sendStatus(200)];
+                        return [2 /*return*/, res.status(200).json({ goodbye: "come again soon" })];
                 }
             });
         });
+    };
+    AuthController.prototype.sendSuccessfulUserResult = function (res, authServiceResult) {
+        var user = authServiceResult.user, sessionToken = authServiceResult.sessionToken, csrfToken = authServiceResult.csrfToken;
+        res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
+        res.cookie("XSRF-TOKEN", csrfToken);
+        this.sendUserDetails(user, res);
+    };
+    AuthController.prototype.sendUserDetails = function (user, res) {
+        var email;
+        try {
+            email = user.emailAndPasswordProvider.email;
+        }
+        catch (e) {
+            email = null;
+        }
+        res.status(200).json({ id: user.id, isAnonymous: user.isAnonymous, roles: user.roles, email: email });
     };
     __decorate([
         common_1.Post('login-email-and-password-user'),
@@ -138,14 +211,35 @@ var AuthController = /** @class */ (function () {
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
-    ], AuthController.prototype, "login", null);
+    ], AuthController.prototype, "loginEmailAndPasswordUser", null);
     __decorate([
         common_1.Post('create-email-and-password-user'),
         __param(0, common_1.Res()), __param(1, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
-    ], AuthController.prototype, "createUser", null);
+    ], AuthController.prototype, "createEmailAndPasswordUser", null);
+    __decorate([
+        common_1.Post('create-anonymous-user'),
+        __param(0, common_1.Res()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "createAnonymousUser", null);
+    __decorate([
+        common_1.Patch('upgrade-anonymous-user-to-email-and-password'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "upgradeAnonymousUser", null);
+    __decorate([
+        common_1.Post('reauthenticate'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "reauthenticateUser", null);
     __decorate([
         common_1.Post('logout'),
         roles_decorator_1.Roles('user'),

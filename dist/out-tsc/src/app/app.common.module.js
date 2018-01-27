@@ -12,19 +12,16 @@ var router_1 = require("@angular/router");
 var http_1 = require("@angular/common/http");
 var forms_1 = require("@angular/forms");
 var index_1 = require("./shared/custom-material-module/index");
+var auth_module_1 = require("./shared/auth/auth.module");
 var app_routing_1 = require("./app.routing");
 var not_found404_component_1 = require("./features/not-found404.component");
-var home_component_1 = require("./features/home/home.component");
-var about_component_1 = require("./features/about/about.component");
 var AppCommonModule = /** @class */ (function () {
     function AppCommonModule() {
     }
     AppCommonModule = __decorate([
         core_1.NgModule({
             declarations: [
-                not_found404_component_1.NotFound404Component,
-                home_component_1.HomeComponent,
-                about_component_1.AboutComponent
+                not_found404_component_1.NotFound404Component
             ],
             imports: [
                 platform_browser_1.BrowserModule.withServerTransition({ appId: 'angular-universal-pwa-starter' }),
@@ -35,7 +32,8 @@ var AppCommonModule = /** @class */ (function () {
                     cookieName: 'XSRF-TOKEN',
                     headerName: 'x-xsrf-token'
                 }),
-                router_1.RouterModule.forRoot(app_routing_1.routes, { useHash: false, initialNavigation: 'enabled' })
+                router_1.RouterModule.forRoot(app_routing_1.routes, { useHash: false, initialNavigation: 'enabled' }),
+                auth_module_1.AuthModule
             ],
             providers: [],
             bootstrap: [],

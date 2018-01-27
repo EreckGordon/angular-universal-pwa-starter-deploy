@@ -45,41 +45,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
+var security_service_1 = require("../security/security.service");
 var auth_service_1 = require("../../auth/auth.service");
 var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
-    function RetrieveUserIdFromRequestMiddleware(authService) {
+    function RetrieveUserIdFromRequestMiddleware(securityService, authService) {
+        this.securityService = securityService;
         this.authService = authService;
+        this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
     }
     RetrieveUserIdFromRequestMiddleware.prototype.resolve = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
-                        var jwt, payload, err_1;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
+                        var jwt, payload, user, sessionToken, _a, _b, err_1;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
                                 case 0:
                                     jwt = req.cookies["SESSIONID"];
-                                    if (!jwt) return [3 /*break*/, 5];
-                                    _a.label = 1;
+                                    if (!jwt) return [3 /*break*/, 10];
+                                    _c.label = 1;
                                 case 1:
-                                    _a.trys.push([1, 3, , 4]);
-                                    return [4 /*yield*/, this.authService.decodeJwt(jwt)];
+                                    _c.trys.push([1, 8, , 9]);
+                                    return [4 /*yield*/, this.securityService.decodeJwt(jwt)];
                                 case 2:
-                                    payload = _a.sent();
+                                    payload = _c.sent();
+                                    if (!(((payload.exp * 1000) - Date.now()) < 1)) return [3 /*break*/, 7];
+                                    return [4 /*yield*/, this.authService.findUserByUuid(payload.sub)];
+                                case 3:
+                                    user = _c.sent();
+                                    if (!(user !== undefined)) return [3 /*break*/, 6];
+                                    return [4 /*yield*/, this.securityService.createSessionToken({ roles: payload.roles, id: payload.sub, loginProvider: payload.loginProvider })];
+                                case 4:
+                                    sessionToken = _c.sent();
+                                    res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
+                                    _a = req;
+                                    _b = "user";
+                                    return [4 /*yield*/, this.securityService.decodeJwt(sessionToken)];
+                                case 5:
+                                    _a[_b] = _c.sent();
+                                    return [2 /*return*/, next()];
+                                case 6:
+                                    console.log('user is gone from db. removing their authorizing cookies.');
+                                    res.clearCookie('SESSIONID');
+                                    res.clearCookie('XSRF-TOKEN');
+                                    return [2 /*return*/, res.sendStatus(403)];
+                                case 7:
                                     req["user"] = payload;
                                     next();
-                                    return [3 /*break*/, 4];
-                                case 3:
-                                    err_1 = _a.sent();
+                                    return [3 /*break*/, 9];
+                                case 8:
+                                    err_1 = _c.sent();
                                     console.log("Error: Could not extract user from request:", err_1.message);
                                     next();
-                                    return [3 /*break*/, 4];
-                                case 4: return [3 /*break*/, 6];
-                                case 5:
+                                    return [3 /*break*/, 9];
+                                case 9: return [3 /*break*/, 11];
+                                case 10:
                                     next();
-                                    _a.label = 6;
-                                case 6: return [2 /*return*/];
+                                    _c.label = 11;
+                                case 11: return [2 /*return*/];
                             }
                         });
                     }); }];
@@ -88,7 +112,7 @@ var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
     };
     RetrieveUserIdFromRequestMiddleware = __decorate([
         common_1.Middleware(),
-        __metadata("design:paramtypes", [auth_service_1.AuthService])
+        __metadata("design:paramtypes", [security_service_1.SecurityService, auth_service_1.AuthService])
     ], RetrieveUserIdFromRequestMiddleware);
     return RetrieveUserIdFromRequestMiddleware;
 }());

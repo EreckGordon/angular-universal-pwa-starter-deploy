@@ -52,8 +52,17 @@ let SecurityService = class SecurityService {
     }
     decodeJwt(token) {
         return __awaiter(this, void 0, void 0, function* () {
-            const payload = yield jwt.verify(token, RSA_PUBLIC_KEY, { ignoreExpiration: true });
-            return payload;
+            return yield jwt.verify(token, RSA_PUBLIC_KEY, { ignoreExpiration: true });
+        });
+    }
+    createPasswordResetToken() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield signJwt({}, RSA_PRIVATE_KEY, { algorithm: 'RS256', expiresIn: '10m', subject: 'password-reset-token' });
+        });
+    }
+    decodePasswordResetToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield jwt.verify(token, RSA_PUBLIC_KEY, { subject: 'password-reset-token' });
         });
     }
     createPasswordHash({ password }) {

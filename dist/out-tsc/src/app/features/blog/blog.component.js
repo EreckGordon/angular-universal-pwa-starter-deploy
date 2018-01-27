@@ -19,7 +19,7 @@ var BlogComponent = /** @class */ (function () {
         this.destroy = new Subject_1.Subject();
         this.keywords = 'angular, universal, angular-cli, PWA, expressjs';
         this.description = 'Blog page. It is a repository of articles.';
-        this.seoService.setPageTitle('ngiso - blog');
+        this.seoService.setPageTitle('angular universal pwa - blog');
         this.seoService.setKeywordsAndDescription(this.keywords, this.description);
     }
     BlogComponent.prototype.ngOnInit = function () { };

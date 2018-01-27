@@ -46,10 +46,10 @@ exports.databaseProviders = [
                     case 0: return [4 /*yield*/, typeorm_1.createConnection({
                             type: 'postgres',
                             host: 'localhost',
-                            port: 5432,
-                            username: 'postgres',
-                            password: 'testingpass',
-                            database: 'testingDB',
+                            port: +process.env.POSTGRES_PORT || 5432,
+                            username: process.env.POSTGRES_USERNAME || 'postgres',
+                            password: process.env.POSTGRES_PASSWORD || 'testingpass',
+                            database: process.env.POSTGRES_DATABASE || 'testingDB',
                             entities: [
                                 __dirname + '/../**/**.entity{.ts,.js}',
                             ],

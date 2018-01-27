@@ -11,6 +11,9 @@ var database_module_1 = require("../database/database.module");
 var auth_controller_1 = require("./auth.controller");
 var auth_providers_1 = require("./auth.providers");
 var auth_service_1 = require("./auth.service");
+var email_and_password_service_1 = require("./email-and-password/email-and-password.service");
+var anonymous_service_1 = require("./anonymous/anonymous.service");
+var common_module_1 = require("../common/common.module");
 var middlewares_1 = require("../common/middlewares");
 var AuthModule = /** @class */ (function () {
     function AuthModule() {
@@ -21,12 +24,16 @@ var AuthModule = /** @class */ (function () {
     };
     AuthModule = __decorate([
         common_1.Module({
-            modules: [database_module_1.DatabaseModule],
+            modules: [
+                common_module_1.CommonModule,
+                database_module_1.DatabaseModule
+            ],
             components: auth_providers_1.authProviders.concat([
-                auth_service_1.AuthService
+                auth_service_1.AuthService,
+                email_and_password_service_1.EmailAndPasswordService,
+                anonymous_service_1.AnonymousService
             ]),
             controllers: [auth_controller_1.AuthController],
-            exports: [auth_service_1.AuthService]
         })
     ], AuthModule);
     return AuthModule;

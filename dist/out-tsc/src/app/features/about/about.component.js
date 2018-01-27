@@ -16,7 +16,7 @@ var AboutComponent = /** @class */ (function () {
         this.seoService = seoService;
         this.keywords = 'angular, universal, angular-cli, PWA, expressjs';
         this.description = 'About page. It contains contact information.';
-        this.seoService.setPageTitle('ngiso - about');
+        this.seoService.setPageTitle('angular universal pwa - about');
         this.seoService.setKeywordsAndDescription(this.keywords, this.description);
     }
     AboutComponent.prototype.ngOnInit = function () { };

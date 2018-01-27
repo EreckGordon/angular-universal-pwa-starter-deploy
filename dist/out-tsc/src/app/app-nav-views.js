@@ -10,6 +10,11 @@ exports.views = [
         name: 'Blog',
         icon: 'trending_up',
         link: ['blog']
+    },
+    {
+        name: 'Sign In',
+        icon: 'fingerprint',
+        link: ['sign-in']
     }
 ];
 //# sourceMappingURL=app-nav-views.js.map

@@ -24,19 +24,22 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 const email_and_password_service_1 = require("./email-and-password/email-and-password.service");
 const anonymous_service_1 = require("./anonymous/anonymous.service");
+const mailgun_service_1 = require("../common/mailgun.service");
+const security_service_1 = require("../common/security/security.service");
 let AuthService = class AuthService {
-    constructor(emailAndPasswordService, anonymousService, userRepository) {
+    constructor(emailAndPasswordService, anonymousService, userRepository, mailgunService, securityService) {
         this.emailAndPasswordService = emailAndPasswordService;
         this.anonymousService = anonymousService;
         this.userRepository = userRepository;
+        this.mailgunService = mailgunService;
+        this.securityService = securityService;
     }
     loginEmailAndPasswordUser(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.emailAndPasswordService.findUserByEmail(body.email);
             const userExists = user === undefined ? false : true;
             if (!userExists) {
-                const result = { apiCallResult: false, result: { error: 'user does not exist' } };
-                return result;
+                return { apiCallResult: false, result: { error: 'user does not exist' } };
             }
             else {
                 try {
@@ -171,12 +174,34 @@ let AuthService = class AuthService {
             }
         });
     }
+    requestPasswordReset({ email }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield this.emailAndPasswordService.findUserByEmail(email);
+                const userExists = user === undefined ? false : true;
+                if (!userExists)
+                    return { apiCallResult: false, result: { error: 'user does not exist' } };
+                const token = yield this.securityService.createPasswordResetToken();
+                const emailAndPasswordProvider = yield this.emailAndPasswordService.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId);
+                user.emailAndPasswordProvider = emailAndPasswordProvider;
+                user.emailAndPasswordProvider.passwordResetToken = token;
+                yield this.userRepository.save(user);
+                const passwordResetEmail = yield this.mailgunService.sendPasswordResetEmail({ email, token });
+                return { apiCallResult: true, result: {} };
+            }
+            catch (e) {
+                return { apiCallResult: false, result: { error: 'error requesting password reset' } };
+            }
+        });
+    }
 };
 AuthService = __decorate([
     common_1.Component(),
     __param(2, common_1.Inject('UserRepositoryToken')),
     __metadata("design:paramtypes", [email_and_password_service_1.EmailAndPasswordService,
         anonymous_service_1.AnonymousService,
-        typeorm_1.Repository])
+        typeorm_1.Repository,
+        mailgun_service_1.MailgunService,
+        security_service_1.SecurityService])
 ], AuthService);
 exports.AuthService = AuthService;

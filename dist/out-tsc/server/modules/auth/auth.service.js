@@ -49,32 +49,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var typeorm_1 = require("typeorm");
-var user_entity_1 = require("./user.entity");
-var email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
-var util = require('util');
-var fs = require("fs");
-var path = require("path");
-var crypto = require('crypto');
-var argon2 = require("argon2");
-var jwt = require("jsonwebtoken");
-var passwordValidator = require("password-validator");
-var randomBytes = util.promisify(crypto.randomBytes);
-var signJwt = util.promisify(jwt.sign);
-var RSA_PRIVATE_KEY = fs.readFileSync(path.join(process.cwd(), 'private.key'));
-var RSA_PUBLIC_KEY = fs.readFileSync(path.join(process.cwd(), 'public.key'));
+var email_and_password_service_1 = require("./email-and-password/email-and-password.service");
+var anonymous_service_1 = require("./anonymous/anonymous.service");
 var AuthService = /** @class */ (function () {
-    function AuthService(userRepository, emailAndPasswordProviderRepository) {
+    function AuthService(emailAndPasswordService, anonymousService, userRepository) {
+        this.emailAndPasswordService = emailAndPasswordService;
+        this.anonymousService = anonymousService;
         this.userRepository = userRepository;
-        this.emailAndPasswordProviderRepository = emailAndPasswordProviderRepository;
     }
     AuthService.prototype.loginEmailAndPasswordUser = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var credentials, user, userExists, result, loginResult, result, error_1, result;
+            var user, userExists, result, loginResult, result, error_1, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        credentials = body;
-                        return [4 /*yield*/, this.findUserByEmail(credentials.email)];
+                    case 0: return [4 /*yield*/, this.emailAndPasswordService.findUserByEmail(body.email)];
                     case 1:
                         user = _a.sent();
                         userExists = user === undefined ? false : true;
@@ -83,11 +71,11 @@ var AuthService = /** @class */ (function () {
                         return [2 /*return*/, result];
                     case 2:
                         _a.trys.push([2, 4, , 5]);
-                        return [4 /*yield*/, this.loginAndCreateSession(credentials, user)];
+                        return [4 /*yield*/, this.emailAndPasswordService.loginAndCreateSession(body, user)];
                     case 3:
                         loginResult = _a.sent();
-                        if (loginResult["message"] === "Password Invalid")
-                            throw new Error("Password Invalid");
+                        if (loginResult["message"] === 'Password Invalid')
+                            throw new Error('Password Invalid');
                         result = {
                             apiCallResult: true,
                             result: {
@@ -99,34 +87,48 @@ var AuthService = /** @class */ (function () {
                         return [2 /*return*/, result];
                     case 4:
                         error_1 = _a.sent();
-                        result = { apiCallResult: false, result: { error: "Password Invalid" } };
+                        result = { apiCallResult: false, result: { error: 'Password Invalid' } };
                         return [2 /*return*/, result];
                     case 5: return [2 /*return*/];
                 }
             });
         });
     };
-    AuthService.prototype.createEmailAndPasswordUser = function (body) {
+    AuthService.prototype.verifyEmailAndPasswordValidity = function (body) {
         return __awaiter(this, void 0, void 0, function () {
-            var credentials, usernameTaken, result, passwordErrors, result, createUserResult, result, e_1, result;
+            var usernameTaken, result, passwordErrors, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        credentials = body;
-                        return [4 /*yield*/, this.emailTaken(credentials.email)];
+                    case 0: return [4 /*yield*/, this.emailAndPasswordService.emailTaken(body.email)];
                     case 1:
                         usernameTaken = _a.sent();
                         if (usernameTaken) {
                             result = { apiCallResult: false, result: { error: 'Email already in use' } };
                             return [2 /*return*/, result];
                         }
-                        passwordErrors = this.validatePassword(credentials.password);
-                        if (!(passwordErrors.length > 0)) return [3 /*break*/, 2];
-                        result = { apiCallResult: false, result: { error: passwordErrors } };
-                        return [2 /*return*/, result];
+                        passwordErrors = this.emailAndPasswordService.validatePassword(body.password);
+                        if (passwordErrors.length > 0) {
+                            result = { apiCallResult: false, result: { error: passwordErrors } };
+                            return [2 /*return*/, result];
+                        }
+                        return [2 /*return*/, 'success'];
+                }
+            });
+        });
+    };
+    AuthService.prototype.createEmailAndPasswordUser = function (body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var verifyResult, createUserResult, result, e_1, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.verifyEmailAndPasswordValidity(body)];
+                    case 1:
+                        verifyResult = _a.sent();
+                        if (!(verifyResult !== 'success')) return [3 /*break*/, 2];
+                        return [2 /*return*/, verifyResult];
                     case 2:
                         _a.trys.push([2, 4, , 5]);
-                        return [4 /*yield*/, this.createEmailAndPasswordUserAndSession(credentials)];
+                        return [4 /*yield*/, this.emailAndPasswordService.createEmailAndPasswordUserAndSession(body)];
                     case 3:
                         createUserResult = _a.sent();
                         result = {
@@ -140,207 +142,123 @@ var AuthService = /** @class */ (function () {
                         return [2 /*return*/, result];
                     case 4:
                         e_1 = _a.sent();
-                        result = { apiCallResult: false, result: { error: 'Error creating new user' } };
+                        result = { apiCallResult: false, result: { error: 'Error creating new email and password user' } };
                         return [2 /*return*/, result];
                     case 5: return [2 /*return*/];
                 }
             });
         });
     };
-    Object.defineProperty(AuthService.prototype, "publicRSAKey", {
-        get: function () {
-            return RSA_PUBLIC_KEY;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    AuthService.prototype.findUserByEmail = function (email) {
+    AuthService.prototype.createAnonymousUser = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var currentProvider;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.emailAndPasswordProviderRepository.findOne({
-                            where: { email: email },
-                            cache: true // default 1000 = 1 second
-                        })];
-                    case 1:
-                        currentProvider = _a.sent();
-                        if (currentProvider === undefined)
-                            return [2 /*return*/, Promise.resolve(undefined)];
-                        return [4 /*yield*/, this.userRepository.findOne({
-                                where: { emailAndPasswordProviderId: currentProvider.id },
-                                relations: ["emailAndPasswordProvider"],
-                                cache: true
-                            })];
-                    case 2: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    AuthService.prototype.emailTaken = function (email) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.findUserByEmail(email)];
-                    case 1: return [2 /*return*/, (_a.sent()) === undefined ? false : true];
-                }
-            });
-        });
-    };
-    AuthService.prototype.addEmailAndPasswordUserToDatabase = function (email, passwordHash) {
-        return __awaiter(this, void 0, void 0, function () {
-            var emailAndPasswordProvider, user;
+            var createAnonymousUserResult, result, e_2, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        emailAndPasswordProvider = new email_and_password_provider_entity_1.EmailAndPasswordProvider();
-                        emailAndPasswordProvider.email = email;
-                        emailAndPasswordProvider.passwordHash = passwordHash;
-                        user = new user_entity_1.User();
-                        user.isAnonymous = false;
-                        user.roles = ['user'];
-                        user.emailAndPasswordProvider = emailAndPasswordProvider;
-                        return [4 /*yield*/, this.userRepository.save(user)];
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.anonymousService.createAnonymousUserAndSession()];
+                    case 1:
+                        createAnonymousUserResult = _a.sent();
+                        result = {
+                            apiCallResult: true,
+                            result: {
+                                user: createAnonymousUserResult.user,
+                                sessionToken: createAnonymousUserResult.sessionToken,
+                                csrfToken: createAnonymousUserResult.csrfToken
+                            }
+                        };
+                        return [2 /*return*/, result];
+                    case 2:
+                        e_2 = _a.sent();
+                        result = { apiCallResult: false, result: { error: 'Error creating new anonymous user' } };
+                        return [2 /*return*/, result];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthService.prototype.upgradeAnonymousUserToEmailAndPassword = function (req, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var verifyResult, userId, upgradeAnonymousUserToEmailAndPasswordResult, result, e_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.verifyEmailAndPasswordValidity(body)];
+                    case 1:
+                        verifyResult = _a.sent();
+                        if (!(verifyResult !== 'success')) return [3 /*break*/, 2];
+                        return [2 /*return*/, verifyResult];
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        userId = req["user"]["sub"];
+                        return [4 /*yield*/, this.emailAndPasswordService.upgradeAnonymousUserToEmailAndPassword({ email: body.email, password: body.password, userId: userId })];
+                    case 3:
+                        upgradeAnonymousUserToEmailAndPasswordResult = _a.sent();
+                        if (upgradeAnonymousUserToEmailAndPasswordResult["message"] === 'User is not anonymous')
+                            return [2 /*return*/, { apiCallResult: false, result: { error: 'User is not anonymous' } }];
+                        result = {
+                            apiCallResult: true,
+                            result: {
+                                user: upgradeAnonymousUserToEmailAndPasswordResult.user,
+                                sessionToken: upgradeAnonymousUserToEmailAndPasswordResult.sessionToken,
+                                csrfToken: upgradeAnonymousUserToEmailAndPasswordResult.csrfToken
+                            }
+                        };
+                        return [2 /*return*/, result];
+                    case 4:
+                        e_3 = _a.sent();
+                        return [2 /*return*/, { apiCallResult: false, result: { error: 'Not logged in' } }];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthService.prototype.findUserByUuid = function (uuid) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.userRepository.findOne(uuid)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    AuthService.prototype.createEmailAndPasswordUserAndSession = function (credentials) {
+    AuthService.prototype.reauthenticateUser = function (jwt) {
         return __awaiter(this, void 0, void 0, function () {
-            var passwordHash, user, sessionToken, csrfToken, result, err_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var user, _a, emailProvider, e_4;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, argon2.hash(credentials.password)];
+                        _b.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, this.findUserByUuid(jwt["sub"])];
                     case 1:
-                        passwordHash = _a.sent();
-                        return [4 /*yield*/, this.addEmailAndPasswordUserToDatabase(credentials.email, passwordHash)];
-                    case 2:
-                        user = _a.sent();
-                        return [4 /*yield*/, this.createSessionToken(user)];
+                        user = _b.sent();
+                        if (user.isAnonymous) {
+                            return [2 /*return*/, { apiCallResult: true, result: { user: user } }];
+                        }
+                        _a = jwt["loginProvider"];
+                        switch (_a) {
+                            case "emailAndPassword": return [3 /*break*/, 2];
+                        }
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.emailAndPasswordService.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId)];
                     case 3:
-                        sessionToken = _a.sent();
-                        return [4 /*yield*/, this.createCsrfToken()];
-                    case 4:
-                        csrfToken = _a.sent();
-                        result = { user: user, sessionToken: sessionToken, csrfToken: csrfToken };
-                        return [2 /*return*/, result];
+                        emailProvider = _b.sent();
+                        user.emailAndPasswordProvider = emailProvider;
+                        return [2 /*return*/, { apiCallResult: true, result: { user: user } }];
+                    case 4: return [3 /*break*/, 6];
                     case 5:
-                        err_1 = _a.sent();
-                        return [2 /*return*/, err_1];
+                        e_4 = _b.sent();
+                        return [2 /*return*/, { apiCallResult: false, result: { error: 'could not reauthenticate' } }];
                     case 6: return [2 /*return*/];
                 }
             });
         });
     };
-    AuthService.prototype.loginAndCreateSession = function (credentials, user) {
-        return __awaiter(this, void 0, void 0, function () {
-            var sessionToken, csrfToken, result, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.attemptLoginWithEmailAndPassword(credentials, user)];
-                    case 1:
-                        sessionToken = _a.sent();
-                        return [4 /*yield*/, this.createCsrfToken()];
-                    case 2:
-                        csrfToken = _a.sent();
-                        result = { sessionToken: sessionToken, csrfToken: csrfToken };
-                        return [2 /*return*/, result];
-                    case 3:
-                        err_2 = _a.sent();
-                        return [2 /*return*/, err_2];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    AuthService.prototype.findEmailProviderById = function (providerId) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.emailAndPasswordProviderRepository.findOne({
-                            where: { id: providerId },
-                            cache: true
-                        })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    AuthService.prototype.attemptLoginWithEmailAndPassword = function (credentials, user) {
-        return __awaiter(this, void 0, void 0, function () {
-            var emailProvider, isPasswordValid;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.findEmailProviderById(user.emailAndPasswordProviderId)];
-                    case 1:
-                        emailProvider = _a.sent();
-                        return [4 /*yield*/, argon2.verify(emailProvider.passwordHash, credentials.password)];
-                    case 2:
-                        isPasswordValid = _a.sent();
-                        if (!isPasswordValid) {
-                            throw new Error("Password Invalid");
-                        }
-                        return [2 /*return*/, this.createSessionToken(user)];
-                }
-            });
-        });
-    };
-    AuthService.prototype.createCsrfToken = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, randomBytes(32).then(function (bytes) { return bytes.toString("hex"); })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    AuthService.prototype.createSessionToken = function (user) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, signJwt({
-                            roles: user.roles
-                        }, RSA_PRIVATE_KEY, {
-                            algorithm: 'RS256',
-                            expiresIn: '2h',
-                            subject: user.id.toString()
-                        })];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    AuthService.prototype.decodeJwt = function (token) {
-        return __awaiter(this, void 0, void 0, function () {
-            var payload;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, jwt.verify(token, RSA_PUBLIC_KEY)];
-                    case 1:
-                        payload = _a.sent();
-                        return [2 /*return*/, payload];
-                }
-            });
-        });
-    };
-    AuthService.prototype.validatePassword = function (password) {
-        var schema = new passwordValidator();
-        schema
-            .is().min(10)
-            .is().not().oneOf(['Passw0rd', 'Password123']);
-        return schema.validate(password, { list: true });
-    };
     AuthService = __decorate([
         common_1.Component(),
-        __param(0, common_1.Inject('UserRepositoryToken')),
-        __param(1, common_1.Inject('EmailAndPasswordProviderRepositoryToken')),
-        __metadata("design:paramtypes", [typeorm_1.Repository,
+        __param(2, common_1.Inject('UserRepositoryToken')),
+        __metadata("design:paramtypes", [email_and_password_service_1.EmailAndPasswordService,
+            anonymous_service_1.AnonymousService,
             typeorm_1.Repository])
     ], AuthService);
     return AuthService;
