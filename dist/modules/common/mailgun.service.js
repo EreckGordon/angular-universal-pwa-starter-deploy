@@ -15,34 +15,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const nodemailer = require("nodemailer");
-const mg = require("nodemailer-mailgun-transport");
+const mailgun = require('mailgun-js')({
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_EMAIL_DOMAIN,
+});
 let MailgunService = class MailgunService {
-    constructor() {
-        this.nodemailerMailgun = nodemailer.createTransport(mg({
-            auth: {
-                api_key: process.env.MAILGUN_API_KEY,
-                domain: process.env.MAILGUN_EMAIL_DOMAIN
-            }
-        }));
-    }
     sendPasswordResetEmail({ email, token }) {
         return __awaiter(this, void 0, void 0, function* () {
             const html = `
-    		<div>To reset your password for ${process.env.SITENAME_BASE}, please follow this link:
-    		<a href="${process.env.SITE_URL}/reset-password/?token=${token}&email=${email}">
-    			${process.env.SITE_URL}/reset-password/?email=${email}&token=${token}
-    		</a></div><br>
+            <div>To reset your password for ${process.env.SITENAME_BASE}, please follow
+            <a href="${process.env.SITE_URL}/reset-password/?token=${token}">
+                this link
+            </a></div><br>
 
-    		<div>
-    		The link will expire in 10 minutes.
-    		</div>
-    	`;
-            return yield this.nodemailerMailgun.sendMail({
+            <div>
+            The link will expire in 10 minutes.
+            </div>
+        `;
+            return yield mailgun.messages().send({
                 to: email,
                 from: `noreply@${process.env.MAILGUN_EMAIL_DOMAIN}`,
                 subject: `Password Reset Request for ${process.env.SITENAME_BASE}`,
-                html
+                html,
             });
         });
     }

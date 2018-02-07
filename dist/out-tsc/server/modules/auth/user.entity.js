@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var email_and_password_provider_entity_1 = require("./email-and-password/email-and-password-provider.entity");
-var User = /** @class */ (function () {
+var User = (function () {
     function User() {
     }
     __decorate([

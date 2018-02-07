@@ -50,7 +50,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var typeorm_1 = require("typeorm");
 var article_entity_1 = require("./article.entity");
-var ArticleService = /** @class */ (function () {
+var ArticleService = (function () {
     function ArticleService(articleRepository) {
         this.articleRepository = articleRepository;
     }

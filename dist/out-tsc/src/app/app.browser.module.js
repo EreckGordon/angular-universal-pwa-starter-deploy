@@ -16,26 +16,23 @@ var app_common_module_1 = require("./app.common.module");
 var seo_service_1 = require("./shared/seo.service");
 var ngsw_update_service_1 = require("./shared/ngsw-update.service");
 var environment_1 = require("../environments/environment");
-var AppBrowserModule = /** @class */ (function () {
+var AppBrowserModule = (function () {
     function AppBrowserModule() {
     }
     AppBrowserModule = __decorate([
         core_1.NgModule({
             bootstrap: [app_component_1.AppComponent],
-            declarations: [
-                app_component_1.AppComponent
-            ],
+            declarations: [app_component_1.AppComponent],
             imports: [
                 animations_1.BrowserAnimationsModule,
                 app_common_module_1.AppCommonModule,
                 platform_browser_1.BrowserTransferStateModule,
                 common_1.TransferHttpCacheModule,
-                service_worker_1.ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment_1.environment.production })
+                service_worker_1.ServiceWorkerModule.register('/ngsw-worker.js', {
+                    enabled: environment_1.environment.production,
+                }),
             ],
-            providers: [
-                seo_service_1.SEOService,
-                ngsw_update_service_1.NGSWUpdateService
-            ]
+            providers: [seo_service_1.SEOService, ngsw_update_service_1.NGSWUpdateService],
         })
     ], AppBrowserModule);
     return AppBrowserModule;

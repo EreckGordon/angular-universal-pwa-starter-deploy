@@ -13,16 +13,16 @@ var core_1 = require("@angular/core");
 var http_1 = require("@angular/common/http");
 var forms_1 = require("@angular/forms");
 var seo_service_1 = require("../../shared/seo.service");
-var auth_service_1 = require("../../shared/auth/services/auth.service");
+var auth_service_1 = require("../../shared/auth/auth.service");
 require("rxjs/add/operator/take");
-var HomeComponent = /** @class */ (function () {
+var HomeComponent = (function () {
     function HomeComponent(seoService, http, fb, authService) {
         this.seoService = seoService;
         this.http = http;
         this.fb = fb;
         this.authService = authService;
         this.keywords = 'angular, universal, angular-cli, PWA, nestjs';
-        this.description = 'ngiso: Angular Isomorphic. It is a Progressive Web App (PWA) built with Angular Universal.';
+        this.description = 'Angular Universal PWA, built with nestjs and typeorm.';
         this.seoService.setPageTitle('angular universal pwa - home');
         this.seoService.setKeywordsAndDescription(this.keywords, this.description);
         this.user$ = authService.user$;
@@ -30,23 +30,25 @@ var HomeComponent = /** @class */ (function () {
     HomeComponent.prototype.ngOnInit = function () {
         this.loginForm = this.fb.group({
             email: ['', forms_1.Validators.required],
-            password: ['', forms_1.Validators.required]
+            password: ['', forms_1.Validators.required],
         });
         this.createUserForm = this.fb.group({
             email: ['', forms_1.Validators.required],
-            password: ['', forms_1.Validators.required]
+            password: ['', forms_1.Validators.required],
         });
         this.upgradeAnonymousUserForm = this.fb.group({
             email: ['', forms_1.Validators.required],
-            password: ['', forms_1.Validators.required]
+            password: ['', forms_1.Validators.required],
         });
     };
     HomeComponent.prototype.helloWorld = function () {
         var headers = new http_1.HttpHeaders({ 'Content-Type': 'application/json' });
         var options = { headers: headers, withCredentials: true };
         var body = { hello: 'world' };
-        var helloWorld = this.http.post('http://localhost:8000/hello-world', body, options)
-            .take(1).subscribe(function (result) {
+        var helloWorld = this.http
+            .post('http://localhost:8000/hello-world', body, options)
+            .take(1)
+            .subscribe(function (result) {
             console.log(result);
         }, function (error) { return console.log(error); });
     };
@@ -69,14 +71,20 @@ var HomeComponent = /** @class */ (function () {
     HomeComponent.prototype.upgradeAnonymousUserToEmailAndPasswordUser = function () {
         var email = this.upgradeAnonymousUserForm.value.email;
         var password = this.upgradeAnonymousUserForm.value.password;
-        this.authService.upgradeAnonymousUserToEmailAndPasswordUser({ email: email, password: password });
+        this.authService.upgradeAnonymousUserToEmailAndPasswordUser({
+            email: email,
+            password: password,
+        });
     };
     HomeComponent = __decorate([
         core_1.Component({
             selector: 'app-home',
-            templateUrl: './home.component.html'
+            templateUrl: './home.component.html',
         }),
-        __metadata("design:paramtypes", [seo_service_1.SEOService, http_1.HttpClient, forms_1.FormBuilder, auth_service_1.AuthService])
+        __metadata("design:paramtypes", [seo_service_1.SEOService,
+            http_1.HttpClient,
+            forms_1.FormBuilder,
+            auth_service_1.AuthService])
     ], HomeComponent);
     return HomeComponent;
 }());

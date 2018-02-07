@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var seo_service_1 = require("../shared/seo.service");
-var NotFound404Component = /** @class */ (function () {
+var NotFound404Component = (function () {
     function NotFound404Component(seoService) {
         this.seoService = seoService;
         this.keywords = 'angular, universal, angular-cli, PWA, expressjs';
@@ -22,7 +22,7 @@ var NotFound404Component = /** @class */ (function () {
     NotFound404Component = __decorate([
         core_1.Component({
             selector: 'app-not-found',
-            template: '<h3>Error 404: Not found</h3>'
+            template: '<h3>Error 404: Not found</h3>',
         }),
         __metadata("design:paramtypes", [seo_service_1.SEOService])
     ], NotFound404Component);

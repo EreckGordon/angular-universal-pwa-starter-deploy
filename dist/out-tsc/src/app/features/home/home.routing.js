@@ -7,9 +7,9 @@ exports.routes = [
         children: [
             {
                 path: '',
-                component: home_component_1.HomeComponent
-            }
-        ]
-    }
+                component: home_component_1.HomeComponent,
+            },
+        ],
+    },
 ];
 //# sourceMappingURL=home.routing.js.map

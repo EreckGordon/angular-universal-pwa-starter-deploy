@@ -15,24 +15,19 @@ var email_and_password_service_1 = require("./email-and-password/email-and-passw
 var anonymous_service_1 = require("./anonymous/anonymous.service");
 var common_module_1 = require("../common/common.module");
 var middlewares_1 = require("../common/middlewares");
-var AuthModule = /** @class */ (function () {
+var AuthModule = (function () {
     function AuthModule() {
     }
     AuthModule.prototype.configure = function (consumer) {
         consumer.apply([middlewares_1.RetrieveUserIdFromRequestMiddleware]).forRoutes(auth_controller_1.AuthController);
-        consumer.apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware]).forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
+        consumer
+            .apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware])
+            .forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
     };
     AuthModule = __decorate([
         common_1.Module({
-            modules: [
-                common_module_1.CommonModule,
-                database_module_1.DatabaseModule
-            ],
-            components: auth_providers_1.authProviders.concat([
-                auth_service_1.AuthService,
-                email_and_password_service_1.EmailAndPasswordService,
-                anonymous_service_1.AnonymousService
-            ]),
+            modules: [common_module_1.CommonModule, database_module_1.DatabaseModule],
+            components: auth_providers_1.authProviders.concat([auth_service_1.AuthService, email_and_password_service_1.EmailAndPasswordService, anonymous_service_1.AnonymousService]),
             controllers: [auth_controller_1.AuthController],
         })
     ], AuthModule);

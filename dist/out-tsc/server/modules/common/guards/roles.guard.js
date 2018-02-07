@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var core_1 = require("@nestjs/core");
-var RolesGuard = /** @class */ (function () {
+var RolesGuard = (function () {
     function RolesGuard(reflector) {
         this.reflector = reflector;
     }

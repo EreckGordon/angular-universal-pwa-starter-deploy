@@ -48,14 +48,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
-var HelloWorldController = /** @class */ (function () {
+var HelloWorldController = (function () {
     function HelloWorldController() {
     }
     HelloWorldController.prototype.helloWorld = function (res, body) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 console.log(body);
-                res.status(common_1.HttpStatus.OK).json({ hello: "world" });
+                res.status(common_1.HttpStatus.OK).json({ hello: 'world' });
                 return [2 /*return*/];
             });
         });

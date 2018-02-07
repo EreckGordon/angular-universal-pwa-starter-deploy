@@ -48,14 +48,14 @@ let AuthController = class AuthController {
             }
             else {
                 switch (createUserResult.result.error) {
-                    case "Email already in use":
+                    case 'Email already in use':
                         res.status(409).json(createUserResult.result.error);
                         break;
-                    case "Error creating new user":
+                    case 'Error creating new user':
                         res.sendStatus(500);
                         break;
                     default:
-                        res.status(400).json(createUserResult.result.error);
+                        res.status(401).json(createUserResult.result.error);
                         break;
                 }
             }
@@ -80,7 +80,7 @@ let AuthController = class AuthController {
             }
             else {
                 switch (upgradeResult.result.error) {
-                    case "User is not anonymous":
+                    case 'User is not anonymous':
                         res.status(409).json({ error: 'User is not anonymous' });
                         break;
                     default:
@@ -94,38 +94,78 @@ let AuthController = class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             const requestPasswordResetResult = yield this.authService.requestPasswordReset(body);
             if (requestPasswordResetResult.apiCallResult) {
-                res.sendStatus(200);
+                res.status(200).json({ result: 'password reset email sent' });
             }
             else {
                 res.status(401).json(requestPasswordResetResult.result.error);
             }
         });
     }
+    resetPassword(req, res, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const resetPasswordResult = yield this.authService.resetPassword(body);
+            if (resetPasswordResult.apiCallResult) {
+                this.sendSuccessfulUserResult(res, resetPasswordResult.result);
+            }
+            else {
+                res.status(401).json(resetPasswordResult.result.error);
+            }
+        });
+    }
+    changePassword(req, res, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const jwt = yield req['user'];
+            const changePasswordResult = yield this.authService.changePassword(body, jwt);
+            if (changePasswordResult.apiCallResult) {
+                res.status(200).json(changePasswordResult.result);
+            }
+            else {
+                res.status(401).json(changePasswordResult.result.error);
+            }
+        });
+    }
     reauthenticateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const jwt = yield req["user"];
+            const jwt = yield req['user'];
             const reauthenticateResult = yield this.authService.reauthenticateUser(jwt);
             if (reauthenticateResult.apiCallResult) {
                 this.sendUserDetails(reauthenticateResult.result.user, res);
             }
             else {
-                res.clearCookie("SESSIONID");
-                yield res.clearCookie("XSRF-TOKEN");
+                res.clearCookie('SESSIONID');
+                yield res.clearCookie('XSRF-TOKEN');
                 res.status(401).json(reauthenticateResult.result.error);
+            }
+        });
+    }
+    deleteAccount(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const jwt = yield req['user'];
+            const deleteAccountResult = yield this.authService.deleteAccount(jwt);
+            if (deleteAccountResult.apiCallResult) {
+                res.clearCookie('SESSIONID');
+                yield res.clearCookie('XSRF-TOKEN');
+                return res.status(200).json({ result: 'account permanently deleted' });
+            }
+            else {
+                res.status(401).json(deleteAccountResult.result.error);
             }
         });
     }
     logout(res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.clearCookie("SESSIONID");
-            yield res.clearCookie("XSRF-TOKEN");
-            return res.status(200).json({ goodbye: "come again soon" });
+            res.clearCookie('SESSIONID');
+            yield res.clearCookie('XSRF-TOKEN');
+            return res.status(200).json({ goodbye: 'come again soon' });
         });
     }
     sendSuccessfulUserResult(res, authServiceResult) {
         const { user, sessionToken, csrfToken } = authServiceResult;
-        res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
-        res.cookie("XSRF-TOKEN", csrfToken);
+        res.cookie('SESSIONID', sessionToken, {
+            httpOnly: true,
+            secure: this.useSecure,
+        });
+        res.cookie('XSRF-TOKEN', csrfToken);
         this.sendUserDetails(user, res);
     }
     sendUserDetails(user, res) {
@@ -136,19 +176,26 @@ let AuthController = class AuthController {
         catch (e) {
             email = null;
         }
-        res.status(200).json({ id: user.id, isAnonymous: user.isAnonymous, roles: user.roles, email });
+        res.status(200).json({
+            id: user.id,
+            isAnonymous: user.isAnonymous,
+            roles: user.roles,
+            email,
+        });
     }
 };
 __decorate([
     common_1.Post('login-email-and-password-user'),
-    __param(0, common_1.Res()), __param(1, common_1.Body()),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginEmailAndPasswordUser", null);
 __decorate([
     common_1.Post('create-email-and-password-user'),
-    __param(0, common_1.Res()), __param(1, common_1.Body()),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
@@ -162,18 +209,39 @@ __decorate([
 ], AuthController.prototype, "createAnonymousUser", null);
 __decorate([
     common_1.Patch('upgrade-anonymous-user-to-email-and-password'),
-    __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+    __param(0, common_1.Req()),
+    __param(1, common_1.Res()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "upgradeAnonymousUser", null);
 __decorate([
     common_1.Post('request-password-reset'),
-    __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+    __param(0, common_1.Req()),
+    __param(1, common_1.Res()),
+    __param(2, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "requestPasswordReset", null);
+__decorate([
+    common_1.Post('reset-password'),
+    __param(0, common_1.Req()),
+    __param(1, common_1.Res()),
+    __param(2, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "resetPassword", null);
+__decorate([
+    common_1.Post('change-password'),
+    roles_decorator_1.Roles('user'),
+    __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "changePassword", null);
 __decorate([
     common_1.Post('reauthenticate'),
     __param(0, common_1.Req()), __param(1, common_1.Res()),
@@ -182,8 +250,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "reauthenticateUser", null);
 __decorate([
-    common_1.Post('logout'),
+    common_1.Post('delete-account'),
     roles_decorator_1.Roles('user'),
+    __param(0, common_1.Req()), __param(1, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "deleteAccount", null);
+__decorate([
+    common_1.Post('logout'),
     __param(0, common_1.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

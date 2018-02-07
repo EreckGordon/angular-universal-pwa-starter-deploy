@@ -18,21 +18,15 @@ const middlewares_1 = require("../common/middlewares");
 let AuthModule = class AuthModule {
     configure(consumer) {
         consumer.apply([middlewares_1.RetrieveUserIdFromRequestMiddleware]).forRoutes(auth_controller_1.AuthController);
-        consumer.apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware]).forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
+        consumer
+            .apply([middlewares_1.checkIfAuthenticatedMiddleware, middlewares_1.checkCSRFTokenMiddleware])
+            .forRoutes({ path: '/logout', method: common_1.RequestMethod.ALL });
     }
 };
 AuthModule = __decorate([
     common_1.Module({
-        modules: [
-            common_module_1.CommonModule,
-            database_module_1.DatabaseModule
-        ],
-        components: [
-            ...auth_providers_1.authProviders,
-            auth_service_1.AuthService,
-            email_and_password_service_1.EmailAndPasswordService,
-            anonymous_service_1.AnonymousService
-        ],
+        modules: [common_module_1.CommonModule, database_module_1.DatabaseModule],
+        components: [...auth_providers_1.authProviders, auth_service_1.AuthService, email_and_password_service_1.EmailAndPasswordService, anonymous_service_1.AnonymousService],
         controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);

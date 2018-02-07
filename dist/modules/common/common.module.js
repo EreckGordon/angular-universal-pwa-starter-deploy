@@ -13,14 +13,8 @@ let CommonModule = class CommonModule {
 };
 CommonModule = __decorate([
     common_1.Module({
-        components: [
-            security_service_1.SecurityService,
-            mailgun_service_1.MailgunService
-        ],
-        exports: [
-            security_service_1.SecurityService,
-            mailgun_service_1.MailgunService
-        ]
+        components: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
+        exports: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
     })
 ], CommonModule);
 exports.CommonModule = CommonModule;

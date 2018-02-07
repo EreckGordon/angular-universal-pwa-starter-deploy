@@ -29,16 +29,23 @@ let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddlew
     resolve() {
         return __awaiter(this, void 0, void 0, function* () {
             return (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-                const jwt = req.cookies["SESSIONID"];
+                const jwt = req.cookies['SESSIONID'];
                 if (jwt) {
                     try {
                         const payload = yield this.securityService.decodeJwt(jwt);
-                        if (((payload.exp * 1000) - Date.now()) < 1) {
+                        if (payload.exp * 1000 - Date.now() < 1) {
                             const user = yield this.authService.findUserByUuid(payload.sub);
                             if (user !== undefined) {
-                                const sessionToken = yield this.securityService.createSessionToken({ roles: payload.roles, id: payload.sub, loginProvider: payload.loginProvider });
-                                res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
-                                req["user"] = yield this.securityService.decodeJwt(sessionToken);
+                                const sessionToken = yield this.securityService.createSessionToken({
+                                    roles: payload.roles,
+                                    id: payload.sub,
+                                    loginProvider: payload.loginProvider,
+                                });
+                                res.cookie('SESSIONID', sessionToken, {
+                                    httpOnly: true,
+                                    secure: this.useSecure,
+                                });
+                                req['user'] = yield this.securityService.decodeJwt(sessionToken);
                                 return next();
                             }
                             else {
@@ -48,11 +55,11 @@ let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddlew
                                 return res.sendStatus(403);
                             }
                         }
-                        req["user"] = payload;
+                        req['user'] = payload;
                         next();
                     }
                     catch (err) {
-                        console.log("Error: Could not extract user from request:", err.message);
+                        console.log('Error: Could not extract user from request:', err.message);
                         next();
                     }
                 }
@@ -65,6 +72,7 @@ let RetrieveUserIdFromRequestMiddleware = class RetrieveUserIdFromRequestMiddlew
 };
 RetrieveUserIdFromRequestMiddleware = __decorate([
     common_1.Middleware(),
-    __metadata("design:paramtypes", [security_service_1.SecurityService, auth_service_1.AuthService])
+    __metadata("design:paramtypes", [security_service_1.SecurityService,
+        auth_service_1.AuthService])
 ], RetrieveUserIdFromRequestMiddleware);
 exports.RetrieveUserIdFromRequestMiddleware = RetrieveUserIdFromRequestMiddleware;

@@ -12,14 +12,10 @@ describe('AppComponent', function () {
             imports: [
                 testing_2.RouterTestingModule,
                 custom_material_module_1.CustomMaterialModule,
-                service_worker_1.ServiceWorkerModule.register('', { enabled: false })
+                service_worker_1.ServiceWorkerModule.register('', { enabled: false }),
             ],
-            declarations: [
-                app_component_1.AppComponent
-            ],
-            providers: [
-                ngsw_update_service_1.NGSWUpdateService
-            ]
+            declarations: [app_component_1.AppComponent],
+            providers: [ngsw_update_service_1.NGSWUpdateService],
         }).compileComponents();
     }));
     it('should create the app', testing_1.async(function () {

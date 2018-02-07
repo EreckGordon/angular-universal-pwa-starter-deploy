@@ -44,14 +44,14 @@ let EmailAndPasswordService = class EmailAndPasswordService {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.emailAndPasswordProviderRepository.findOne({
                 where: { id: providerId },
-                cache: true
+                cache: true,
             });
         });
     }
     findEmailAndPasswordProviderByEmail(email) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.emailAndPasswordProviderRepository.findOne({
-                where: { email }
+                where: { email },
             });
         });
     }
@@ -59,8 +59,8 @@ let EmailAndPasswordService = class EmailAndPasswordService {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.userRepository.findOne({
                 where: { emailAndPasswordProviderId: id },
-                relations: ["emailAndPasswordProvider"],
-                cache: true
+                relations: ['emailAndPasswordProvider'],
+                cache: true,
             });
         });
     }
@@ -84,9 +84,15 @@ let EmailAndPasswordService = class EmailAndPasswordService {
     createEmailAndPasswordUserAndSession(credentials) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const passwordHash = yield this.securityService.createPasswordHash({ password: credentials.password });
+                const passwordHash = yield this.securityService.createPasswordHash({
+                    password: credentials.password,
+                });
                 const user = yield this.addEmailAndPasswordUserToDatabase(credentials.email, passwordHash);
-                const sessionToken = yield this.securityService.createSessionToken({ roles: user.roles, id: user.id.toString(), loginProvider: 'emailAndPassword' });
+                const sessionToken = yield this.securityService.createSessionToken({
+                    roles: user.roles,
+                    id: user.id.toString(),
+                    loginProvider: 'emailAndPassword',
+                });
                 const csrfToken = yield this.securityService.createCsrfToken();
                 const result = { user, sessionToken, csrfToken };
                 return result;
@@ -112,19 +118,36 @@ let EmailAndPasswordService = class EmailAndPasswordService {
     attemptLoginWithEmailAndPassword(credentials, user) {
         return __awaiter(this, void 0, void 0, function* () {
             let emailProvider = yield this.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId);
-            const isPasswordValid = yield this.securityService.verifyPasswordHash({ passwordHash: emailProvider.passwordHash, password: credentials.password });
+            const isPasswordValid = yield this.securityService.verifyPasswordHash({
+                passwordHash: emailProvider.passwordHash,
+                password: credentials.password,
+            });
             if (!isPasswordValid) {
-                throw new Error("Password Invalid");
+                throw new Error('Password Invalid');
             }
-            return this.securityService.createSessionToken({ roles: user.roles, id: user.id, loginProvider: 'emailAndPassword' });
+            return this.securityService.createSessionToken({
+                roles: user.roles,
+                id: user.id,
+                loginProvider: 'emailAndPassword',
+            });
         });
     }
-    upgradeAnonymousUserToEmailAndPassword({ email, password, userId }) {
+    upgradeAnonymousUserToEmailAndPassword({ email, password, userId, }) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const passwordHash = yield this.securityService.createPasswordHash({ password });
-                const user = yield this.upgradeAnonymousUserInDatabase({ email, passwordHash, userId });
-                const sessionToken = yield this.securityService.createSessionToken({ roles: user.roles, id: user.id, loginProvider: 'emailAndPassword' });
+                const passwordHash = yield this.securityService.createPasswordHash({
+                    password,
+                });
+                const user = yield this.upgradeAnonymousUserInDatabase({
+                    email,
+                    passwordHash,
+                    userId,
+                });
+                const sessionToken = yield this.securityService.createSessionToken({
+                    roles: user.roles,
+                    id: user.id,
+                    loginProvider: 'emailAndPassword',
+                });
                 const csrfToken = yield this.securityService.createCsrfToken();
                 const result = { user, sessionToken, csrfToken };
                 return result;
@@ -148,11 +171,24 @@ let EmailAndPasswordService = class EmailAndPasswordService {
             return yield this.userRepository.save(user);
         });
     }
+    removeEmailAndPasswordProvider(provider) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.emailAndPasswordProviderRepository.remove(provider);
+        });
+    }
+    updateEmailAndPasswordProvider(provider) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.emailAndPasswordProviderRepository.save(provider);
+        });
+    }
     validatePassword(password) {
         const schema = new passwordValidator();
         schema
-            .is().min(10)
-            .is().not().oneOf(['Passw0rd', 'Password123']);
+            .is()
+            .min(10)
+            .is()
+            .not()
+            .oneOf(['Passw0rd', 'Password123']);
         return schema.validate(password, { list: true });
     }
 };

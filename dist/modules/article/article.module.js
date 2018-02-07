@@ -15,11 +15,8 @@ let ArticleModule = class ArticleModule {
 ArticleModule = __decorate([
     common_1.Module({
         modules: [database_module_1.DatabaseModule],
-        components: [
-            ...article_providers_1.articleProviders,
-            article_service_1.ArticleService
-        ],
-        exports: [article_service_1.ArticleService]
+        components: [...article_providers_1.articleProviders, article_service_1.ArticleService],
+        exports: [article_service_1.ArticleService],
     })
 ], ArticleModule);
 exports.ArticleModule = ArticleModule;

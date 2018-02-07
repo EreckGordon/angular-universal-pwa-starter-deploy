@@ -10,16 +10,14 @@ var common_1 = require("@nestjs/common");
 var database_module_1 = require("../database/database.module");
 var article_providers_1 = require("./article.providers");
 var article_service_1 = require("./article.service");
-var ArticleModule = /** @class */ (function () {
+var ArticleModule = (function () {
     function ArticleModule() {
     }
     ArticleModule = __decorate([
         common_1.Module({
             modules: [database_module_1.DatabaseModule],
-            components: article_providers_1.articleProviders.concat([
-                article_service_1.ArticleService
-            ]),
-            exports: [article_service_1.ArticleService]
+            components: article_providers_1.articleProviders.concat([article_service_1.ArticleService]),
+            exports: [article_service_1.ArticleService],
         })
     ], ArticleModule);
     return ArticleModule;

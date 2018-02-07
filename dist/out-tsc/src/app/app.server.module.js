@@ -13,7 +13,7 @@ var module_map_ngfactory_loader_1 = require("@nguniversal/module-map-ngfactory-l
 var app_component_1 = require("./app.component");
 var app_common_module_1 = require("./app.common.module");
 var seo_service_1 = require("./shared/seo.service");
-var AppServerModule = /** @class */ (function () {
+var AppServerModule = (function () {
     function AppServerModule() {
     }
     AppServerModule = __decorate([
@@ -23,12 +23,10 @@ var AppServerModule = /** @class */ (function () {
                 animations_1.NoopAnimationsModule,
                 platform_server_1.ServerTransferStateModule,
                 platform_server_1.ServerModule,
-                module_map_ngfactory_loader_1.ModuleMapLoaderModule
+                module_map_ngfactory_loader_1.ModuleMapLoaderModule,
             ],
             bootstrap: [app_component_1.AppComponent],
-            providers: [
-                seo_service_1.SEOService
-            ]
+            providers: [seo_service_1.SEOService],
         })
     ], AppServerModule);
     return AppServerModule;

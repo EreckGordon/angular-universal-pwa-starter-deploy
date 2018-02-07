@@ -14,7 +14,7 @@ var index_1 = require("../../shared/custom-material-module/index");
 var forms_1 = require("@angular/forms");
 var home_component_1 = require("./home.component");
 var home_service_1 = require("./home.service");
-var HomeModule = /** @class */ (function () {
+var HomeModule = (function () {
     function HomeModule() {
     }
     HomeModule = __decorate([
@@ -23,12 +23,10 @@ var HomeModule = /** @class */ (function () {
                 common_1.CommonModule,
                 router_1.RouterModule.forChild(home_routing_1.routes),
                 index_1.CustomMaterialModule,
-                forms_1.ReactiveFormsModule
+                forms_1.ReactiveFormsModule,
             ],
-            declarations: [
-                home_component_1.HomeComponent
-            ],
-            providers: [home_service_1.HomeService]
+            declarations: [home_component_1.HomeComponent],
+            providers: [home_service_1.HomeService],
         })
     ], HomeModule);
     return HomeModule;

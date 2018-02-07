@@ -33,7 +33,11 @@ let AnonymousService = class AnonymousService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield this.addAnonymousUserToDatabase();
-                const sessionToken = yield this.securityService.createSessionToken({ roles: user.roles, id: user.id.toString(), loginProvider: 'anonymous' });
+                const sessionToken = yield this.securityService.createSessionToken({
+                    roles: user.roles,
+                    id: user.id.toString(),
+                    loginProvider: 'anonymous',
+                });
                 const csrfToken = yield this.securityService.createCsrfToken();
                 const result = { user, sessionToken, csrfToken };
                 return result;

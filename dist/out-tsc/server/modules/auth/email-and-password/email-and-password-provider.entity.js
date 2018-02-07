@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var EmailAndPasswordProvider = /** @class */ (function () {
+var EmailAndPasswordProvider = (function () {
     function EmailAndPasswordProvider() {
     }
     __decorate([
@@ -25,6 +25,10 @@ var EmailAndPasswordProvider = /** @class */ (function () {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], EmailAndPasswordProvider.prototype, "passwordHash", void 0);
+    __decorate([
+        typeorm_1.Column({ nullable: true }),
+        __metadata("design:type", String)
+    ], EmailAndPasswordProvider.prototype, "passwordResetToken", void 0);
     EmailAndPasswordProvider = __decorate([
         typeorm_1.Entity()
     ], EmailAndPasswordProvider);

@@ -15,27 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
 var router_1 = require("@angular/router");
+var environment_1 = require("../environments/environment");
 var app_nav_views_1 = require("./app-nav-views");
 var ngsw_update_service_1 = require("./shared/ngsw-update.service");
-var environment_1 = require("../environments/environment");
-var AppComponent = /** @class */ (function () {
-    function AppComponent(router, injector, platformId) {
+var auth_service_1 = require("./shared/auth/auth.service");
+var AppComponent = (function () {
+    function AppComponent(router, injector, platformId, auth) {
         this.router = router;
         this.injector = injector;
         this.platformId = platformId;
+        this.auth = auth;
         this.views = app_nav_views_1.views;
         if (common_1.isPlatformBrowser(this.platformId) && environment_1.environment.production) {
             this.worker = this.injector.get(ngsw_update_service_1.NGSWUpdateService);
         }
+        this.user$ = auth.user$;
     }
     AppComponent = __decorate([
         core_1.Component({
             selector: 'app-root',
             templateUrl: './app.component.html',
-            styleUrls: ['./app.component.scss']
+            styleUrls: ['./app.component.scss'],
         }),
         __param(2, core_1.Inject(core_1.PLATFORM_ID)),
-        __metadata("design:paramtypes", [router_1.Router, core_1.Injector, Object])
+        __metadata("design:paramtypes", [router_1.Router,
+            core_1.Injector,
+            Object,
+            auth_service_1.AuthService])
     ], AppComponent);
     return AppComponent;
 }());

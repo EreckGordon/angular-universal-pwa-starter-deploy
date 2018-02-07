@@ -10,16 +10,13 @@ var common_1 = require("@nestjs/common");
 var app_controller_1 = require("./app.controller");
 var auth_module_1 = require("./auth/auth.module");
 var hello_world_controller_1 = require("./hello-world.controller");
-var ApplicationModule = /** @class */ (function () {
+var ApplicationModule = (function () {
     function ApplicationModule() {
     }
     ApplicationModule = __decorate([
         common_1.Module({
             modules: [auth_module_1.AuthModule],
-            controllers: [
-                app_controller_1.AppController,
-                hello_world_controller_1.HelloWorldController
-            ]
+            controllers: [app_controller_1.AppController, hello_world_controller_1.HelloWorldController],
         })
     ], ApplicationModule);
     return ApplicationModule;

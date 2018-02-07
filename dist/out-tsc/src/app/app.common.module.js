@@ -15,32 +15,32 @@ var index_1 = require("./shared/custom-material-module/index");
 var auth_module_1 = require("./shared/auth/auth.module");
 var app_routing_1 = require("./app.routing");
 var not_found404_component_1 = require("./features/not-found404.component");
-var AppCommonModule = /** @class */ (function () {
+var AppCommonModule = (function () {
     function AppCommonModule() {
     }
     AppCommonModule = __decorate([
         core_1.NgModule({
-            declarations: [
-                not_found404_component_1.NotFound404Component
-            ],
+            declarations: [not_found404_component_1.NotFound404Component],
             imports: [
-                platform_browser_1.BrowserModule.withServerTransition({ appId: 'angular-universal-pwa-starter' }),
+                platform_browser_1.BrowserModule.withServerTransition({
+                    appId: 'angular-universal-pwa-starter',
+                }),
                 index_1.CustomMaterialModule,
                 forms_1.ReactiveFormsModule,
                 http_1.HttpClientModule,
                 http_1.HttpClientXsrfModule.withOptions({
                     cookieName: 'XSRF-TOKEN',
-                    headerName: 'x-xsrf-token'
+                    headerName: 'x-xsrf-token',
                 }),
-                router_1.RouterModule.forRoot(app_routing_1.routes, { useHash: false, initialNavigation: 'enabled' }),
-                auth_module_1.AuthModule
+                router_1.RouterModule.forRoot(app_routing_1.routes, {
+                    useHash: false,
+                    initialNavigation: 'enabled',
+                }),
+                auth_module_1.AuthModule,
             ],
             providers: [],
             bootstrap: [],
-            exports: [
-                index_1.CustomMaterialModule,
-                router_1.RouterModule
-            ]
+            exports: [index_1.CustomMaterialModule, router_1.RouterModule],
         })
     ], AppCommonModule);
     return AppCommonModule;

@@ -47,7 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var security_service_1 = require("../security/security.service");
 var auth_service_1 = require("../../auth/auth.service");
-var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
+var RetrieveUserIdFromRequestMiddleware = (function () {
     function RetrieveUserIdFromRequestMiddleware(securityService, authService) {
         this.securityService = securityService;
         this.authService = authService;
@@ -62,7 +62,7 @@ var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
                         return __generator(this, function (_c) {
                             switch (_c.label) {
                                 case 0:
-                                    jwt = req.cookies["SESSIONID"];
+                                    jwt = req.cookies['SESSIONID'];
                                     if (!jwt) return [3 /*break*/, 10];
                                     _c.label = 1;
                                 case 1:
@@ -70,17 +70,24 @@ var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
                                     return [4 /*yield*/, this.securityService.decodeJwt(jwt)];
                                 case 2:
                                     payload = _c.sent();
-                                    if (!(((payload.exp * 1000) - Date.now()) < 1)) return [3 /*break*/, 7];
+                                    if (!(payload.exp * 1000 - Date.now() < 1)) return [3 /*break*/, 7];
                                     return [4 /*yield*/, this.authService.findUserByUuid(payload.sub)];
                                 case 3:
                                     user = _c.sent();
                                     if (!(user !== undefined)) return [3 /*break*/, 6];
-                                    return [4 /*yield*/, this.securityService.createSessionToken({ roles: payload.roles, id: payload.sub, loginProvider: payload.loginProvider })];
+                                    return [4 /*yield*/, this.securityService.createSessionToken({
+                                            roles: payload.roles,
+                                            id: payload.sub,
+                                            loginProvider: payload.loginProvider,
+                                        })];
                                 case 4:
                                     sessionToken = _c.sent();
-                                    res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
+                                    res.cookie('SESSIONID', sessionToken, {
+                                        httpOnly: true,
+                                        secure: this.useSecure,
+                                    });
                                     _a = req;
-                                    _b = "user";
+                                    _b = 'user';
                                     return [4 /*yield*/, this.securityService.decodeJwt(sessionToken)];
                                 case 5:
                                     _a[_b] = _c.sent();
@@ -91,12 +98,12 @@ var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
                                     res.clearCookie('XSRF-TOKEN');
                                     return [2 /*return*/, res.sendStatus(403)];
                                 case 7:
-                                    req["user"] = payload;
+                                    req['user'] = payload;
                                     next();
                                     return [3 /*break*/, 9];
                                 case 8:
                                     err_1 = _c.sent();
-                                    console.log("Error: Could not extract user from request:", err_1.message);
+                                    console.log('Error: Could not extract user from request:', err_1.message);
                                     next();
                                     return [3 /*break*/, 9];
                                 case 9: return [3 /*break*/, 11];
@@ -112,7 +119,8 @@ var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
     };
     RetrieveUserIdFromRequestMiddleware = __decorate([
         common_1.Middleware(),
-        __metadata("design:paramtypes", [security_service_1.SecurityService, auth_service_1.AuthService])
+        __metadata("design:paramtypes", [security_service_1.SecurityService,
+            auth_service_1.AuthService])
     ], RetrieveUserIdFromRequestMiddleware);
     return RetrieveUserIdFromRequestMiddleware;
 }());

@@ -51,7 +51,7 @@ var common_1 = require("@nestjs/common");
 var typeorm_1 = require("typeorm");
 var user_entity_1 = require("../user.entity");
 var security_service_1 = require("../../common/security/security.service");
-var AnonymousService = /** @class */ (function () {
+var AnonymousService = (function () {
     function AnonymousService(userRepository, securityService) {
         this.userRepository = userRepository;
         this.securityService = securityService;
@@ -66,7 +66,11 @@ var AnonymousService = /** @class */ (function () {
                         return [4 /*yield*/, this.addAnonymousUserToDatabase()];
                     case 1:
                         user = _a.sent();
-                        return [4 /*yield*/, this.securityService.createSessionToken({ roles: user.roles, id: user.id.toString(), loginProvider: 'anonymous' })];
+                        return [4 /*yield*/, this.securityService.createSessionToken({
+                                roles: user.roles,
+                                id: user.id.toString(),
+                                loginProvider: 'anonymous',
+                            })];
                     case 2:
                         sessionToken = _a.sent();
                         return [4 /*yield*/, this.securityService.createCsrfToken()];

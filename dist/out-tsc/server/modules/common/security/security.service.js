@@ -55,7 +55,7 @@ var randomBytes = util.promisify(crypto.randomBytes);
 var signJwt = util.promisify(jwt.sign);
 var RSA_PRIVATE_KEY = fs.readFileSync(path.join(process.cwd(), 'private.key'));
 var RSA_PUBLIC_KEY = fs.readFileSync(path.join(process.cwd(), 'public.key'));
-var SecurityService = /** @class */ (function () {
+var SecurityService = (function () {
     function SecurityService() {
     }
     Object.defineProperty(SecurityService.prototype, "publicRSAKey", {
@@ -69,7 +69,7 @@ var SecurityService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, randomBytes(32).then(function (bytes) { return bytes.toString("hex"); })];
+                    case 0: return [4 /*yield*/, randomBytes(32).then(function (bytes) { return bytes.toString('hex'); })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -78,30 +78,67 @@ var SecurityService = /** @class */ (function () {
     SecurityService.prototype.createSessionToken = function (_a) {
         var roles = _a.roles, id = _a.id, loginProvider = _a.loginProvider;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, signJwt({
                             roles: roles,
-                            loginProvider: loginProvider
+                            loginProvider: loginProvider,
                         }, RSA_PRIVATE_KEY, {
                             algorithm: 'RS256',
                             expiresIn: '2h',
-                            subject: id
+                            subject: id,
                         })];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
     SecurityService.prototype.decodeJwt = function (token) {
         return __awaiter(this, void 0, void 0, function () {
-            var payload;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, jwt.verify(token, RSA_PUBLIC_KEY, { ignoreExpiration: true })];
-                    case 1:
-                        payload = _a.sent();
-                        return [2 /*return*/, payload];
+                    case 0: return [4 /*yield*/, jwt.verify(token, RSA_PUBLIC_KEY, {
+                            ignoreExpiration: true,
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    SecurityService.prototype.createPasswordResetToken = function (email) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, signJwt({ email: email }, RSA_PRIVATE_KEY, {
+                            algorithm: 'RS256',
+                            expiresIn: '10m',
+                            subject: 'password-reset-token',
+                        })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    SecurityService.prototype.decodePasswordResetToken = function (token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, jwt.verify(token, RSA_PUBLIC_KEY, {
+                                subject: 'password-reset-token',
+                            })];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        e_1 = _a.sent();
+                        if (e_1.message === 'jwt expired')
+                            return [2 /*return*/, e_1.message];
+                        else {
+                            return [2 /*return*/, e_1];
+                        }
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -109,10 +146,10 @@ var SecurityService = /** @class */ (function () {
     SecurityService.prototype.createPasswordHash = function (_a) {
         var password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, argon2.hash(password)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -120,10 +157,10 @@ var SecurityService = /** @class */ (function () {
     SecurityService.prototype.verifyPasswordHash = function (_a) {
         var passwordHash = _a.passwordHash, password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, argon2.verify(passwordHash, password)];
-                    case 1: return [2 /*return*/, _b.sent()];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });

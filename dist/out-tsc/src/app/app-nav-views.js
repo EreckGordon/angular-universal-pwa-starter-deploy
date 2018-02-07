@@ -4,17 +4,12 @@ exports.views = [
     {
         name: 'About',
         icon: 'important_devices',
-        link: ['about']
+        link: ['about'],
     },
     {
         name: 'Blog',
         icon: 'trending_up',
-        link: ['blog']
+        link: ['blog'],
     },
-    {
-        name: 'Sign In',
-        icon: 'fingerprint',
-        link: ['sign-in']
-    }
 ];
 //# sourceMappingURL=app-nav-views.js.map

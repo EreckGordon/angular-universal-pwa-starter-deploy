@@ -51,7 +51,7 @@ var common_1 = require("@nestjs/common");
 var auth_service_1 = require("./auth.service");
 var roles_guard_1 = require("../common/guards/roles.guard");
 var roles_decorator_1 = require("../common/decorators/roles.decorator");
-var AuthController = /** @class */ (function () {
+var AuthController = (function () {
     function AuthController(authService) {
         this.authService = authService;
         this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
@@ -88,14 +88,14 @@ var AuthController = /** @class */ (function () {
                         }
                         else {
                             switch (createUserResult.result.error) {
-                                case "Email already in use":
-                                    res.status(409).json({ error: 'Email already in use' });
+                                case 'Email already in use':
+                                    res.status(409).json(createUserResult.result.error);
                                     break;
-                                case "Error creating new user":
+                                case 'Error creating new user':
                                     res.sendStatus(500);
                                     break;
                                 default:
-                                    res.status(400).json(createUserResult.result.error);
+                                    res.status(401).json(createUserResult.result.error);
                                     break;
                             }
                         }
@@ -136,7 +136,7 @@ var AuthController = /** @class */ (function () {
                         }
                         else {
                             switch (upgradeResult.result.error) {
-                                case "User is not anonymous":
+                                case 'User is not anonymous':
                                     res.status(409).json({ error: 'User is not anonymous' });
                                     break;
                                 default:
@@ -149,12 +149,72 @@ var AuthController = /** @class */ (function () {
             });
         });
     };
+    AuthController.prototype.requestPasswordReset = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var requestPasswordResetResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.authService.requestPasswordReset(body)];
+                    case 1:
+                        requestPasswordResetResult = _a.sent();
+                        if (requestPasswordResetResult.apiCallResult) {
+                            res.status(200).json({ result: 'password reset email sent' });
+                        }
+                        else {
+                            res.status(401).json(requestPasswordResetResult.result.error);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.resetPassword = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var resetPasswordResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.authService.resetPassword(body)];
+                    case 1:
+                        resetPasswordResult = _a.sent();
+                        if (resetPasswordResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, resetPasswordResult.result);
+                        }
+                        else {
+                            res.status(401).json(resetPasswordResult.result.error);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.changePassword = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var jwt, changePasswordResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req['user']];
+                    case 1:
+                        jwt = _a.sent();
+                        return [4 /*yield*/, this.authService.changePassword(body, jwt)];
+                    case 2:
+                        changePasswordResult = _a.sent();
+                        if (changePasswordResult.apiCallResult) {
+                            res.status(200).json(changePasswordResult.result);
+                        }
+                        else {
+                            res.status(401).json(changePasswordResult.result.error);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     AuthController.prototype.reauthenticateUser = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var jwt, reauthenticateResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, req["user"]];
+                    case 0: return [4 /*yield*/, req['user']];
                     case 1:
                         jwt = _a.sent();
                         return [4 /*yield*/, this.authService.reauthenticateUser(jwt)];
@@ -164,11 +224,36 @@ var AuthController = /** @class */ (function () {
                         this.sendUserDetails(reauthenticateResult.result.user, res);
                         return [3 /*break*/, 5];
                     case 3:
-                        res.clearCookie("SESSIONID");
-                        return [4 /*yield*/, res.clearCookie("XSRF-TOKEN")];
+                        res.clearCookie('SESSIONID');
+                        return [4 /*yield*/, res.clearCookie('XSRF-TOKEN')];
                     case 4:
                         _a.sent();
                         res.status(401).json(reauthenticateResult.result.error);
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.deleteAccount = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var jwt, deleteAccountResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req['user']];
+                    case 1:
+                        jwt = _a.sent();
+                        return [4 /*yield*/, this.authService.deleteAccount(jwt)];
+                    case 2:
+                        deleteAccountResult = _a.sent();
+                        if (!deleteAccountResult.apiCallResult) return [3 /*break*/, 4];
+                        res.clearCookie('SESSIONID');
+                        return [4 /*yield*/, res.clearCookie('XSRF-TOKEN')];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, res.status(200).json({ result: 'account permanently deleted' })];
+                    case 4:
+                        res.status(401).json(deleteAccountResult.result.error);
                         _a.label = 5;
                     case 5: return [2 /*return*/];
                 }
@@ -180,19 +265,22 @@ var AuthController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        res.clearCookie("SESSIONID");
-                        return [4 /*yield*/, res.clearCookie("XSRF-TOKEN")];
+                        res.clearCookie('SESSIONID');
+                        return [4 /*yield*/, res.clearCookie('XSRF-TOKEN')];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/, res.status(200).json({ goodbye: "come again soon" })];
+                        return [2 /*return*/, res.status(200).json({ goodbye: 'come again soon' })];
                 }
             });
         });
     };
     AuthController.prototype.sendSuccessfulUserResult = function (res, authServiceResult) {
         var user = authServiceResult.user, sessionToken = authServiceResult.sessionToken, csrfToken = authServiceResult.csrfToken;
-        res.cookie("SESSIONID", sessionToken, { httpOnly: true, secure: this.useSecure });
-        res.cookie("XSRF-TOKEN", csrfToken);
+        res.cookie('SESSIONID', sessionToken, {
+            httpOnly: true,
+            secure: this.useSecure,
+        });
+        res.cookie('XSRF-TOKEN', csrfToken);
         this.sendUserDetails(user, res);
     };
     AuthController.prototype.sendUserDetails = function (user, res) {
@@ -203,18 +291,25 @@ var AuthController = /** @class */ (function () {
         catch (e) {
             email = null;
         }
-        res.status(200).json({ id: user.id, isAnonymous: user.isAnonymous, roles: user.roles, email: email });
+        res.status(200).json({
+            id: user.id,
+            isAnonymous: user.isAnonymous,
+            roles: user.roles,
+            email: email,
+        });
     };
     __decorate([
         common_1.Post('login-email-and-password-user'),
-        __param(0, common_1.Res()), __param(1, common_1.Body()),
+        __param(0, common_1.Res()),
+        __param(1, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "loginEmailAndPasswordUser", null);
     __decorate([
         common_1.Post('create-email-and-password-user'),
-        __param(0, common_1.Res()), __param(1, common_1.Body()),
+        __param(0, common_1.Res()),
+        __param(1, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
@@ -228,11 +323,39 @@ var AuthController = /** @class */ (function () {
     ], AuthController.prototype, "createAnonymousUser", null);
     __decorate([
         common_1.Patch('upgrade-anonymous-user-to-email-and-password'),
-        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __param(0, common_1.Req()),
+        __param(1, common_1.Res()),
+        __param(2, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Object]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "upgradeAnonymousUser", null);
+    __decorate([
+        common_1.Post('request-password-reset'),
+        __param(0, common_1.Req()),
+        __param(1, common_1.Res()),
+        __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "requestPasswordReset", null);
+    __decorate([
+        common_1.Post('reset-password'),
+        __param(0, common_1.Req()),
+        __param(1, common_1.Res()),
+        __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "resetPassword", null);
+    __decorate([
+        common_1.Post('change-password'),
+        roles_decorator_1.Roles('user'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "changePassword", null);
     __decorate([
         common_1.Post('reauthenticate'),
         __param(0, common_1.Req()), __param(1, common_1.Res()),
@@ -241,15 +364,22 @@ var AuthController = /** @class */ (function () {
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "reauthenticateUser", null);
     __decorate([
-        common_1.Post('logout'),
+        common_1.Post('delete-account'),
         roles_decorator_1.Roles('user'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "deleteAccount", null);
+    __decorate([
+        common_1.Post('logout'),
         __param(0, common_1.Res()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "logout", null);
     AuthController = __decorate([
-        common_1.Controller('auth'),
+        common_1.Controller('api/auth'),
         common_1.UseGuards(roles_guard_1.RolesGuard),
         __metadata("design:paramtypes", [auth_service_1.AuthService])
     ], AuthController);

@@ -13,7 +13,7 @@ var core_1 = require("@angular/core");
 var Subject_1 = require("rxjs/Subject");
 var blog_service_1 = require("./blog.service");
 var seo_service_1 = require("../../shared/seo.service");
-var BlogComponent = /** @class */ (function () {
+var BlogComponent = (function () {
     function BlogComponent(seoService, blogService) {
         this.seoService = seoService;
         this.destroy = new Subject_1.Subject();
@@ -29,7 +29,7 @@ var BlogComponent = /** @class */ (function () {
     BlogComponent = __decorate([
         core_1.Component({
             selector: 'app-blog',
-            templateUrl: './blog.component.html'
+            templateUrl: './blog.component.html',
         }),
         __metadata("design:paramtypes", [seo_service_1.SEOService, blog_service_1.BlogService])
     ], BlogComponent);

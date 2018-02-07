@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var seo_service_1 = require("../../shared/seo.service");
-var AboutComponent = /** @class */ (function () {
+var AboutComponent = (function () {
     function AboutComponent(seoService) {
         this.seoService = seoService;
         this.keywords = 'angular, universal, angular-cli, PWA, expressjs';
@@ -23,7 +23,7 @@ var AboutComponent = /** @class */ (function () {
     AboutComponent = __decorate([
         core_1.Component({
             selector: 'app-about',
-            templateUrl: './about.component.html'
+            templateUrl: './about.component.html',
         }),
         __metadata("design:paramtypes", [seo_service_1.SEOService])
     ], AboutComponent);

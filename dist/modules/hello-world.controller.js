@@ -25,7 +25,7 @@ let HelloWorldController = class HelloWorldController {
     helloWorld(res, body) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(body);
-            res.status(common_1.HttpStatus.OK).json({ hello: "world" });
+            res.status(common_1.HttpStatus.OK).json({ hello: 'world' });
         });
     }
 };

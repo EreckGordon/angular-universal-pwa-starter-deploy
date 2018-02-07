@@ -6,6 +6,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.environment = {
     production: false,
-    baseUrl: 'http://localhost:8000'
+    baseUrl: 'http://localhost:8000',
+    recaptchaSiteKey: '6LcSKkQUAAAAAPnrsv5KxTXoPw1QGfxOsA3ZeFye',
 };
 //# sourceMappingURL=environment.js.map

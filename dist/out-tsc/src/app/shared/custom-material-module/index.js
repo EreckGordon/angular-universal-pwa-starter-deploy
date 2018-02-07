@@ -37,9 +37,9 @@ var MaterialModules = [
     bidi_1.BidiModule,
     a11y_1.A11yModule,
     platform_1.PlatformModule,
-    material_1.MatCommonModule
+    material_1.MatCommonModule,
 ];
-var CustomMaterialModule = /** @class */ (function () {
+var CustomMaterialModule = (function () {
     function CustomMaterialModule() {
     }
     CustomMaterialModule = __decorate([

@@ -12,19 +12,14 @@ var router_1 = require("@angular/router");
 var about_routing_1 = require("./about.routing");
 var about_component_1 = require("./about.component");
 var about_service_1 = require("./about.service");
-var AboutModule = /** @class */ (function () {
+var AboutModule = (function () {
     function AboutModule() {
     }
     AboutModule = __decorate([
         core_1.NgModule({
-            imports: [
-                common_1.CommonModule,
-                router_1.RouterModule.forChild(about_routing_1.routes)
-            ],
-            declarations: [
-                about_component_1.AboutComponent
-            ],
-            providers: [about_service_1.AboutService]
+            imports: [common_1.CommonModule, router_1.RouterModule.forChild(about_routing_1.routes)],
+            declarations: [about_component_1.AboutComponent],
+            providers: [about_service_1.AboutService],
         })
     ], AboutModule);
     return AboutModule;

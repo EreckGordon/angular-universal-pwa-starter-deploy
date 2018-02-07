@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var AboutService = /** @class */ (function () {
+var AboutService = (function () {
     function AboutService() {
     }
     AboutService = __decorate([

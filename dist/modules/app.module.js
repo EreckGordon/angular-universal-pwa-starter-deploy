@@ -15,10 +15,7 @@ let ApplicationModule = class ApplicationModule {
 ApplicationModule = __decorate([
     common_1.Module({
         modules: [auth_module_1.AuthModule],
-        controllers: [
-            app_controller_1.AppController,
-            hello_world_controller_1.HelloWorldController
-        ]
+        controllers: [app_controller_1.AppController, hello_world_controller_1.HelloWorldController],
     })
 ], ApplicationModule);
 exports.ApplicationModule = ApplicationModule;

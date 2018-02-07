@@ -31,21 +31,27 @@ const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require(path.join(DIST_FOL
 core_2.enableProdMode();
 const configuredNgExpressEngine = express_engine_1.ngExpressEngine({
     bootstrap: AppServerModuleNgFactory,
-    providers: [
-        module_map_ngfactory_loader_1.provideModuleMap(LAZY_MODULE_MAP)
-    ]
+    providers: [module_map_ngfactory_loader_1.provideModuleMap(LAZY_MODULE_MAP)],
 });
 const server = express();
 server.engine('html', configuredNgExpressEngine);
 server.set('view engine', 'html');
 server.set('views', DIST_BROWSER_FOLDER);
 const options = {
-    allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token", "Authorization", "x-xsrf-token"],
+    allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Accept',
+        'X-Access-Token',
+        'Authorization',
+        'x-xsrf-token',
+    ],
     credentials: true,
-    methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     origin: ['http://localhost:4200', 'http://localhost:8000'],
     preflightContinue: false,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
 };
 server.use(compression());
 server.get('*.*', express.static(DIST_BROWSER_FOLDER, { maxAge: '1y' }));
@@ -53,7 +59,7 @@ server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(cookieParser());
 server.use(cors(options));
-server.options("*", cors(options));
+server.options('*', cors(options));
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = yield core_1.NestFactory.create(app_module_1.ApplicationModule, server);

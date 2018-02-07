@@ -7,9 +7,9 @@ exports.routes = [
         children: [
             {
                 path: '',
-                component: blog_component_1.BlogComponent
-            }
-        ]
-    }
+                component: blog_component_1.BlogComponent,
+            },
+        ],
+    },
 ];
 //# sourceMappingURL=blog.routing.js.map

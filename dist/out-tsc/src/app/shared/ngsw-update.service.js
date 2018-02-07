@@ -16,7 +16,7 @@ var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/debounceTime");
 require("rxjs/add/operator/startWith");
 require("rxjs/add/operator/take");
-var NGSWUpdateService = /** @class */ (function () {
+var NGSWUpdateService = (function () {
     function NGSWUpdateService(swUpdate, snackBar) {
         var _this = this;
         this.swUpdate = swUpdate;
@@ -31,13 +31,15 @@ var NGSWUpdateService = /** @class */ (function () {
     }
     NGSWUpdateService.prototype.checkForUpdate = function () {
         var _this = this;
-        this.swUpdate.checkForUpdate()
+        this.swUpdate
+            .checkForUpdate()
             .then(function () { return _this.scheduleCheckForUpdate(); })
             .catch(function (err) { return console.error(err); });
     };
     NGSWUpdateService.prototype.activateUpdate = function () {
         var _this = this;
-        this.swUpdate.activateUpdate()
+        this.swUpdate
+            .activateUpdate()
             .then(function () { return _this.reloadPrompt(); })
             .catch(function (err) { return console.error(err); });
     };
@@ -45,8 +47,11 @@ var NGSWUpdateService = /** @class */ (function () {
         this.checkForUpdateSubj.next();
     };
     NGSWUpdateService.prototype.reloadPrompt = function () {
-        this.snackBar.open('Updated Content Available, Press OK to Reload', 'OK')
-            .afterDismissed().take(1).subscribe(function () { return window.location.reload(); });
+        this.snackBar
+            .open('Updated Content Available, Press OK to Reload', 'OK')
+            .afterDismissed()
+            .take(1)
+            .subscribe(function () { return window.location.reload(); });
     };
     NGSWUpdateService = __decorate([
         core_1.Injectable(),

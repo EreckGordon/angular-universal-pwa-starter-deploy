@@ -49,11 +49,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var typeorm_1 = require("typeorm");
+var passwordValidator = require("password-validator");
 var user_entity_1 = require("../user.entity");
 var email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
 var security_service_1 = require("../../common/security/security.service");
-var passwordValidator = require("password-validator");
-var EmailAndPasswordService = /** @class */ (function () {
+var EmailAndPasswordService = (function () {
     function EmailAndPasswordService(userRepository, emailAndPasswordProviderRepository, securityService) {
         this.userRepository = userRepository;
         this.emailAndPasswordProviderRepository = emailAndPasswordProviderRepository;
@@ -80,7 +80,7 @@ var EmailAndPasswordService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.emailAndPasswordProviderRepository.findOne({
                             where: { id: providerId },
-                            cache: true
+                            cache: true,
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -92,7 +92,7 @@ var EmailAndPasswordService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.emailAndPasswordProviderRepository.findOne({
-                            where: { email: email }
+                            where: { email: email },
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -105,8 +105,8 @@ var EmailAndPasswordService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.userRepository.findOne({
                             where: { emailAndPasswordProviderId: id },
-                            relations: ["emailAndPasswordProvider"],
-                            cache: true
+                            relations: ['emailAndPasswordProvider'],
+                            cache: true,
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -149,13 +149,19 @@ var EmailAndPasswordService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this.securityService.createPasswordHash({ password: credentials.password })];
+                        return [4 /*yield*/, this.securityService.createPasswordHash({
+                                password: credentials.password,
+                            })];
                     case 1:
                         passwordHash = _a.sent();
                         return [4 /*yield*/, this.addEmailAndPasswordUserToDatabase(credentials.email, passwordHash)];
                     case 2:
                         user = _a.sent();
-                        return [4 /*yield*/, this.securityService.createSessionToken({ roles: user.roles, id: user.id.toString(), loginProvider: 'emailAndPassword' })];
+                        return [4 /*yield*/, this.securityService.createSessionToken({
+                                roles: user.roles,
+                                id: user.id.toString(),
+                                loginProvider: 'emailAndPassword',
+                            })];
                     case 3:
                         sessionToken = _a.sent();
                         return [4 /*yield*/, this.securityService.createCsrfToken()];
@@ -202,13 +208,20 @@ var EmailAndPasswordService = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId)];
                     case 1:
                         emailProvider = _a.sent();
-                        return [4 /*yield*/, this.securityService.verifyPasswordHash({ passwordHash: emailProvider.passwordHash, password: credentials.password })];
+                        return [4 /*yield*/, this.securityService.verifyPasswordHash({
+                                passwordHash: emailProvider.passwordHash,
+                                password: credentials.password,
+                            })];
                     case 2:
                         isPasswordValid = _a.sent();
                         if (!isPasswordValid) {
-                            throw new Error("Password Invalid");
+                            throw new Error('Password Invalid');
                         }
-                        return [2 /*return*/, this.securityService.createSessionToken({ roles: user.roles, id: user.id, loginProvider: 'emailAndPassword' })];
+                        return [2 /*return*/, this.securityService.createSessionToken({
+                                roles: user.roles,
+                                id: user.id,
+                                loginProvider: 'emailAndPassword',
+                            })];
                 }
             });
         });
@@ -217,26 +230,36 @@ var EmailAndPasswordService = /** @class */ (function () {
         var email = _a.email, password = _a.password, userId = _a.userId;
         return __awaiter(this, void 0, void 0, function () {
             var passwordHash, user, sessionToken, csrfToken, result, err_3;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _b.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, this.securityService.createPasswordHash({ password: password })];
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, this.securityService.createPasswordHash({
+                                password: password,
+                            })];
                     case 1:
-                        passwordHash = _b.sent();
-                        return [4 /*yield*/, this.upgradeAnonymousUserInDatabase({ email: email, passwordHash: passwordHash, userId: userId })];
+                        passwordHash = _a.sent();
+                        return [4 /*yield*/, this.upgradeAnonymousUserInDatabase({
+                                email: email,
+                                passwordHash: passwordHash,
+                                userId: userId,
+                            })];
                     case 2:
-                        user = _b.sent();
-                        return [4 /*yield*/, this.securityService.createSessionToken({ roles: user.roles, id: user.id, loginProvider: 'emailAndPassword' })];
+                        user = _a.sent();
+                        return [4 /*yield*/, this.securityService.createSessionToken({
+                                roles: user.roles,
+                                id: user.id,
+                                loginProvider: 'emailAndPassword',
+                            })];
                     case 3:
-                        sessionToken = _b.sent();
+                        sessionToken = _a.sent();
                         return [4 /*yield*/, this.securityService.createCsrfToken()];
                     case 4:
-                        csrfToken = _b.sent();
+                        csrfToken = _a.sent();
                         result = { user: user, sessionToken: sessionToken, csrfToken: csrfToken };
                         return [2 /*return*/, result];
                     case 5:
-                        err_3 = _b.sent();
+                        err_3 = _a.sent();
                         return [2 /*return*/, err_3];
                     case 6: return [2 /*return*/];
                 }
@@ -247,11 +270,11 @@ var EmailAndPasswordService = /** @class */ (function () {
         var email = _a.email, passwordHash = _a.passwordHash, userId = _a.userId;
         return __awaiter(this, void 0, void 0, function () {
             var user, emailAndPasswordProvider;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0: return [4 /*yield*/, this.userRepository.findOne(userId)];
                     case 1:
-                        user = _b.sent();
+                        user = _a.sent();
                         if (!user.isAnonymous)
                             throw new Error('User is not anonymous');
                         emailAndPasswordProvider = new email_and_password_provider_entity_1.EmailAndPasswordProvider();
@@ -261,16 +284,39 @@ var EmailAndPasswordService = /** @class */ (function () {
                         user.roles = ['user'];
                         user.emailAndPasswordProvider = emailAndPasswordProvider;
                         return [4 /*yield*/, this.userRepository.save(user)];
-                    case 2: return [2 /*return*/, _b.sent()];
+                    case 2: return [2 /*return*/, _a.sent()];
                 }
+            });
+        });
+    };
+    EmailAndPasswordService.prototype.removeEmailAndPasswordProvider = function (provider) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.emailAndPasswordProviderRepository.remove(provider)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    EmailAndPasswordService.prototype.updateEmailAndPasswordProvider = function (provider) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.emailAndPasswordProviderRepository.save(provider);
+                return [2 /*return*/];
             });
         });
     };
     EmailAndPasswordService.prototype.validatePassword = function (password) {
         var schema = new passwordValidator();
         schema
-            .is().min(10)
-            .is().not().oneOf(['Passw0rd', 'Password123']);
+            .is()
+            .min(10)
+            .is()
+            .not()
+            .oneOf(['Passw0rd', 'Password123']);
         return schema.validate(password, { list: true });
     };
     EmailAndPasswordService = __decorate([

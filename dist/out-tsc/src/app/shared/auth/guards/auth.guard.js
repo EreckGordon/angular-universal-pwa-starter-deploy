@@ -11,9 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
-var auth_service_1 = require("../services/auth.service");
+var auth_service_1 = require("../auth.service");
 var operators_1 = require("rxjs/operators");
-var AuthGuard = /** @class */ (function () {
+var AuthGuard = (function () {
     function AuthGuard(authService, router) {
         this.authService = authService;
         this.router = router;
@@ -22,7 +22,7 @@ var AuthGuard = /** @class */ (function () {
         var _this = this;
         return this.authService.user$.take(1).pipe(operators_1.map(function (authState) { return !!authState; }), operators_1.tap(function (authenticated) {
             if (!authenticated) {
-                _this.router.navigate(['/']);
+                _this.router.navigate(['/sign-in']);
             }
         }));
     };

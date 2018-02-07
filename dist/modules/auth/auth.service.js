@@ -39,25 +39,31 @@ let AuthService = class AuthService {
             const user = yield this.emailAndPasswordService.findUserByEmail(body.email);
             const userExists = user === undefined ? false : true;
             if (!userExists) {
-                return { apiCallResult: false, result: { error: 'user does not exist' } };
+                return {
+                    apiCallResult: false,
+                    result: { error: 'user does not exist' },
+                };
             }
             else {
                 try {
                     const loginResult = yield this.emailAndPasswordService.loginAndCreateSession(body, user);
-                    if (loginResult["message"] === 'Password Invalid')
+                    if (loginResult['message'] === 'Password Invalid')
                         throw new Error('Password Invalid');
                     const result = {
                         apiCallResult: true,
                         result: {
                             user,
                             sessionToken: loginResult.sessionToken,
-                            csrfToken: loginResult.csrfToken
-                        }
+                            csrfToken: loginResult.csrfToken,
+                        },
                     };
                     return result;
                 }
                 catch (error) {
-                    const result = { apiCallResult: false, result: { error: 'Password Invalid' } };
+                    const result = {
+                        apiCallResult: false,
+                        result: { error: 'Password Invalid' },
+                    };
                     return result;
                 }
             }
@@ -67,12 +73,18 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const usernameTaken = yield this.emailAndPasswordService.emailTaken(body.email);
             if (usernameTaken) {
-                const result = { apiCallResult: false, result: { error: 'Email already in use' } };
+                const result = {
+                    apiCallResult: false,
+                    result: { error: 'Email already in use' },
+                };
                 return result;
             }
             const passwordErrors = this.emailAndPasswordService.validatePassword(body.password);
             if (passwordErrors.length > 0) {
-                const result = { apiCallResult: false, result: { error: passwordErrors } };
+                const result = {
+                    apiCallResult: false,
+                    result: { error: passwordErrors },
+                };
                 return result;
             }
             return 'success';
@@ -91,13 +103,18 @@ let AuthService = class AuthService {
                         result: {
                             user: createUserResult.user,
                             sessionToken: createUserResult.sessionToken,
-                            csrfToken: createUserResult.csrfToken
-                        }
+                            csrfToken: createUserResult.csrfToken,
+                        },
                     };
                     return result;
                 }
                 catch (e) {
-                    const result = { apiCallResult: false, result: { error: 'Error creating new email and password user' } };
+                    const result = {
+                        apiCallResult: false,
+                        result: {
+                            error: 'Error creating new email and password user',
+                        },
+                    };
                     return result;
                 }
             }
@@ -112,13 +129,16 @@ let AuthService = class AuthService {
                     result: {
                         user: createAnonymousUserResult.user,
                         sessionToken: createAnonymousUserResult.sessionToken,
-                        csrfToken: createAnonymousUserResult.csrfToken
-                    }
+                        csrfToken: createAnonymousUserResult.csrfToken,
+                    },
                 };
                 return result;
             }
             catch (e) {
-                const result = { apiCallResult: false, result: { error: 'Error creating new anonymous user' } };
+                const result = {
+                    apiCallResult: false,
+                    result: { error: 'Error creating new anonymous user' },
+                };
                 return result;
             }
         });
@@ -130,22 +150,29 @@ let AuthService = class AuthService {
                 return verifyResult;
             else {
                 try {
-                    const userId = req["user"]["sub"];
+                    const userId = req['user']['sub'];
                     const upgradeAnonymousUserToEmailAndPasswordResult = yield this.emailAndPasswordService.upgradeAnonymousUserToEmailAndPassword({ email: body.email, password: body.password, userId });
-                    if (upgradeAnonymousUserToEmailAndPasswordResult["message"] === 'User is not anonymous')
-                        return { apiCallResult: false, result: { error: 'User is not anonymous' } };
+                    if (upgradeAnonymousUserToEmailAndPasswordResult['message'] ===
+                        'User is not anonymous')
+                        return {
+                            apiCallResult: false,
+                            result: { error: 'User is not anonymous' },
+                        };
                     const result = {
                         apiCallResult: true,
                         result: {
                             user: upgradeAnonymousUserToEmailAndPasswordResult.user,
                             sessionToken: upgradeAnonymousUserToEmailAndPasswordResult.sessionToken,
-                            csrfToken: upgradeAnonymousUserToEmailAndPasswordResult.csrfToken
-                        }
+                            csrfToken: upgradeAnonymousUserToEmailAndPasswordResult.csrfToken,
+                        },
                     };
                     return result;
                 }
                 catch (e) {
-                    return { apiCallResult: false, result: { error: 'Not logged in' } };
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'Not logged in' },
+                    };
                 }
             }
         });
@@ -158,19 +185,22 @@ let AuthService = class AuthService {
     reauthenticateUser(jwt) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.findUserByUuid(jwt["sub"]);
+                const user = yield this.findUserByUuid(jwt['sub']);
                 if (user.isAnonymous) {
                     return { apiCallResult: true, result: { user } };
                 }
-                switch (jwt["loginProvider"]) {
-                    case "emailAndPassword":
+                switch (jwt['loginProvider']) {
+                    case 'emailAndPassword':
                         const emailProvider = yield this.emailAndPasswordService.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId);
                         user.emailAndPasswordProvider = emailProvider;
                         return { apiCallResult: true, result: { user } };
                 }
             }
             catch (e) {
-                return { apiCallResult: false, result: { error: 'could not reauthenticate' } };
+                return {
+                    apiCallResult: false,
+                    result: { error: 'could not reauthenticate' },
+                };
             }
         });
     }
@@ -180,17 +210,131 @@ let AuthService = class AuthService {
                 const user = yield this.emailAndPasswordService.findUserByEmail(email);
                 const userExists = user === undefined ? false : true;
                 if (!userExists)
-                    return { apiCallResult: false, result: { error: 'user does not exist' } };
-                const token = yield this.securityService.createPasswordResetToken();
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'user does not exist' },
+                    };
+                const token = yield this.securityService.createPasswordResetToken(email);
                 const emailAndPasswordProvider = yield this.emailAndPasswordService.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId);
                 user.emailAndPasswordProvider = emailAndPasswordProvider;
                 user.emailAndPasswordProvider.passwordResetToken = token;
                 yield this.userRepository.save(user);
-                const passwordResetEmail = yield this.mailgunService.sendPasswordResetEmail({ email, token });
+                const passwordResetEmail = yield this.mailgunService.sendPasswordResetEmail({
+                    email,
+                    token,
+                });
                 return { apiCallResult: true, result: {} };
             }
             catch (e) {
-                return { apiCallResult: false, result: { error: 'error requesting password reset' } };
+                return {
+                    apiCallResult: false,
+                    result: { error: 'error requesting password reset' },
+                };
+            }
+        });
+    }
+    resetPassword({ password, token, }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const decodedTokenOrError = yield this.securityService.decodePasswordResetToken(token);
+                if (decodedTokenOrError === 'jwt expired')
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'jwt expired' },
+                    };
+                const emailAndPasswordProvider = yield this.emailAndPasswordService.findEmailAndPasswordProviderByEmail(decodedTokenOrError.email);
+                if (token !== emailAndPasswordProvider.passwordResetToken)
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'jwt does not match database' },
+                    };
+                emailAndPasswordProvider.passwordResetToken = null;
+                const passwordErrors = this.emailAndPasswordService.validatePassword(password);
+                if (passwordErrors.length > 0)
+                    return {
+                        apiCallResult: false,
+                        result: { error: passwordErrors },
+                    };
+                const passwordHash = yield this.securityService.createPasswordHash({
+                    password,
+                });
+                emailAndPasswordProvider.passwordHash = passwordHash;
+                const user = yield this.emailAndPasswordService.findUserAccountByEmailAndPasswordProviderId(emailAndPasswordProvider.id);
+                user.emailAndPasswordProvider = emailAndPasswordProvider;
+                yield this.userRepository.save(user);
+                const sessionToken = yield this.securityService.createSessionToken({
+                    roles: user.roles,
+                    id: user.id,
+                    loginProvider: 'emailAndPassword',
+                });
+                const csrfToken = yield this.securityService.createCsrfToken();
+                return {
+                    apiCallResult: true,
+                    result: { user, sessionToken, csrfToken },
+                };
+            }
+            catch (e) {
+                return {
+                    apiCallResult: false,
+                    result: { error: 'error resetting password' },
+                };
+            }
+        });
+    }
+    changePassword(body, jwt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = yield this.userRepository.findOne(jwt.sub);
+                const emailAndPasswordProvider = yield this.emailAndPasswordService.findEmailAndPasswordProviderById(user.emailAndPasswordProviderId);
+                const isPasswordValid = yield this.securityService.verifyPasswordHash({
+                    passwordHash: emailAndPasswordProvider.passwordHash,
+                    password: body.oldPassword,
+                });
+                if (!isPasswordValid)
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'Password Invalid' },
+                    };
+                const passwordErrors = this.emailAndPasswordService.validatePassword(body.newPassword);
+                if (passwordErrors.length > 0)
+                    return {
+                        apiCallResult: false,
+                        result: { error: passwordErrors },
+                    };
+                const newPasswordHash = yield this.securityService.createPasswordHash({
+                    password: body.newPassword,
+                });
+                emailAndPasswordProvider.passwordHash = newPasswordHash;
+                yield this.emailAndPasswordService.updateEmailAndPasswordProvider(emailAndPasswordProvider);
+                return { apiCallResult: true, result: {} };
+            }
+            catch (e) {
+                return {
+                    apiCallResult: false,
+                    result: { error: 'error changing password' },
+                };
+            }
+        });
+    }
+    deleteAccount(jwt) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userToBeDeleted = yield this.userRepository.findOne(jwt.sub);
+                const providerToBeDeleted = () => __awaiter(this, void 0, void 0, function* () {
+                    switch (jwt.loginProvider) {
+                        case 'emailAndPassword':
+                            return yield this.emailAndPasswordService.findEmailAndPasswordProviderById(userToBeDeleted.emailAndPasswordProviderId);
+                    }
+                });
+                yield this.userRepository.remove(userToBeDeleted);
+                yield this.emailAndPasswordService.removeEmailAndPasswordProvider(yield providerToBeDeleted());
+                return { apiCallResult: true, result: {} };
+            }
+            catch (e) {
+                return {
+                    apiCallResult: false,
+                    result: { error: 'error deleting account' },
+                };
             }
         });
     }

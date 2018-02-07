@@ -22,7 +22,7 @@ let RolesGuard = class RolesGuard {
             return true; // if you don't request a certain role, you return true so the guard doesn't break your other routes.
         }
         const user = req.user;
-        const hasRole = () => !!user.roles.find((role) => !!roles.find((item) => item === role));
+        const hasRole = () => !!user.roles.find(role => !!roles.find(item => item === role));
         return user && user.roles && hasRole();
     }
 };

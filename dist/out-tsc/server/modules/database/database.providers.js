@@ -50,12 +50,10 @@ exports.databaseProviders = [
                             username: process.env.POSTGRES_USERNAME || 'postgres',
                             password: process.env.POSTGRES_PASSWORD || 'testingpass',
                             database: process.env.POSTGRES_DATABASE || 'testingDB',
-                            entities: [
-                                __dirname + '/../**/**.entity{.ts,.js}',
-                            ],
+                            entities: [__dirname + '/../**/**.entity{.ts,.js}'],
                             synchronize: true,
                             logging: false,
-                            cache: true
+                            cache: true,
                         })];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
