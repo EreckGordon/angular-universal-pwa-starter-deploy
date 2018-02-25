@@ -65,15 +65,7 @@ server.engine('html', configuredNgExpressEngine);
 server.set('view engine', 'html');
 server.set('views', DIST_BROWSER_FOLDER);
 var options = {
-    allowedHeaders: [
-        'Origin',
-        'X-Requested-With',
-        'Content-Type',
-        'Accept',
-        'X-Access-Token',
-        'Authorization',
-        'x-xsrf-token',
-    ],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-xsrf-token'],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     origin: ['http://localhost:4200', 'http://localhost:8000'],
@@ -92,7 +84,7 @@ function bootstrap() {
         var app;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, core_1.NestFactory.create(app_module_1.ApplicationModule, server)];
+                case 0: return [4 /*yield*/, core_1.NestFactory.create(app_module_1.ApplicationModule, server, {})];
                 case 1:
                     app = _a.sent();
                     return [4 /*yield*/, app.listen(8000)];

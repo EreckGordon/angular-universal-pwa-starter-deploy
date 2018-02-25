@@ -10,7 +10,7 @@ var common_1 = require("@nestjs/common");
 var database_module_1 = require("../database/database.module");
 var article_providers_1 = require("./article.providers");
 var article_service_1 = require("./article.service");
-var ArticleModule = (function () {
+var ArticleModule = /** @class */ (function () {
     function ArticleModule() {
     }
     ArticleModule = __decorate([

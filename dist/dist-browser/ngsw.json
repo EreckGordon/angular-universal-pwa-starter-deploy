@@ -12,13 +12,14 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/0.6fac3f68f123f5f8e328.chunk.js",
-        "/1.db34e546826cfedade98.chunk.js",
-        "/2.5903214f85fa8105d306.chunk.js",
-        "/inline.90b55e50d79efeb14dd8.bundle.js",
-        "/main.0eeb548f5262f06a497d.bundle.js",
-        "/polyfills.c1794efcb4e46fd4227f.bundle.js",
-        "/styles.5493b8912efcc43dc8ee.bundle.css"
+        "/0.a492284314598dc9c017.chunk.js",
+        "/1.c880172cbad362f52eda.chunk.js",
+        "/2.708dc3597c31a4476df6.chunk.js",
+        "/3.a6f874aea55ea2ad4d0e.chunk.js",
+        "/inline.ed4d1787b59a7e6bb6e2.bundle.js",
+        "/main.8b73f0127cc2aa3b3c28.bundle.js",
+        "/polyfills.78da36c8ecbbd6d45914.bundle.js",
+        "/styles.864a72213b0e5c7e7668.bundle.css"
       ],
       "patterns": []
     },
@@ -27,6 +28,8 @@
       "installMode": "lazy",
       "updateMode": "prefetch",
       "urls": [
+        "/assets/Facebook_icon.svg",
+        "/assets/Gmail_icon.svg",
         "/assets/logo-512x512.png"
       ],
       "patterns": []
@@ -66,15 +69,18 @@
     }
   ],
   "hashTable": {
-    "/0.6fac3f68f123f5f8e328.chunk.js": "35618d01d3ec1765f931d91ee78467ac4bb0b5c1",
+    "/0.a492284314598dc9c017.chunk.js": "719f6e510db4ec57aad11d7cecc7145bd5dd28b6",
+    "/assets/Facebook_icon.svg": "42e6efdcea5ce5a1f2ed2922d535de0231e004ec",
+    "/1.c880172cbad362f52eda.chunk.js": "14439c987fb10a487557e002aaca78d1f4ada926",
+    "/assets/Gmail_icon.svg": "d9ec096fd0f55c9a4de29a48166d20e32b21155f",
+    "/2.708dc3597c31a4476df6.chunk.js": "fac7bf0b38c770ba3532b5faa4eab91e490dc3e1",
     "/assets/logo-512x512.png": "11fbc7458515abd3fe1fb39d5ab9e4c77d9ec3bb",
-    "/1.db34e546826cfedade98.chunk.js": "e263cee042ead98cb4c80cc72e2ebd6b7c0594cf",
-    "/2.5903214f85fa8105d306.chunk.js": "653b6bb78ce998423f7f618df7c5354889cb9963",
-    "/inline.90b55e50d79efeb14dd8.bundle.js": "5fad89ef0b756fc17beedc2a9cea0a41ec04cc87",
-    "/main.0eeb548f5262f06a497d.bundle.js": "83a92b165a3c7c4c97e99dbfb37faa07ed65eea7",
-    "/polyfills.c1794efcb4e46fd4227f.bundle.js": "1b626a0411d3280ec161d15f5a1dc04c14a8ce56",
-    "/styles.5493b8912efcc43dc8ee.bundle.css": "275af9a7b7533539e183fd992ec478fee8838797",
+    "/3.a6f874aea55ea2ad4d0e.chunk.js": "1b44e5d0c4d398dab4d15fdb5e1ef92e55ce85a3",
+    "/inline.ed4d1787b59a7e6bb6e2.bundle.js": "c11792bca04a8da2028d1a8c07e08a35e3f7888a",
+    "/main.8b73f0127cc2aa3b3c28.bundle.js": "eeb7699a982b581927e7d247c92fde79e5fecacf",
+    "/polyfills.78da36c8ecbbd6d45914.bundle.js": "da89d9b2f630a0956c42dd75ecb5d699688562fb",
+    "/styles.864a72213b0e5c7e7668.bundle.css": "2af25bbc3ec9c106f39b4272a0302422dc3d3d9d",
     "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/index.html": "f9d41ef70929559db653de1be578f4124bb8883f"
+    "/index.html": "685cd8a5b48d149c384336e37f9cb1e6f8dab100"
   }
 }

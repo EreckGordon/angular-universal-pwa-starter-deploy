@@ -11,7 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var email_and_password_provider_entity_1 = require("./email-and-password/email-and-password-provider.entity");
-var User = (function () {
+var google_provider_entity_1 = require("./google/google-provider.entity");
+var facebook_provider_entity_1 = require("./facebook/facebook-provider.entity");
+var User = /** @class */ (function () {
     function User() {
     }
     __decorate([
@@ -39,6 +41,24 @@ var User = (function () {
         typeorm_1.JoinColumn(),
         __metadata("design:type", email_and_password_provider_entity_1.EmailAndPasswordProvider)
     ], User.prototype, "emailAndPasswordProvider", void 0);
+    __decorate([
+        typeorm_1.Column({ nullable: true }),
+        __metadata("design:type", Number)
+    ], User.prototype, "googleProviderId", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return google_provider_entity_1.GoogleProvider; }, { cascade: true }),
+        typeorm_1.JoinColumn(),
+        __metadata("design:type", google_provider_entity_1.GoogleProvider)
+    ], User.prototype, "googleProvider", void 0);
+    __decorate([
+        typeorm_1.Column({ nullable: true }),
+        __metadata("design:type", Number)
+    ], User.prototype, "facebookProviderId", void 0);
+    __decorate([
+        typeorm_1.OneToOne(function (type) { return facebook_provider_entity_1.FacebookProvider; }, { cascade: true }),
+        typeorm_1.JoinColumn(),
+        __metadata("design:type", facebook_provider_entity_1.FacebookProvider)
+    ], User.prototype, "facebookProvider", void 0);
     User = __decorate([
         typeorm_1.Entity()
     ], User);

@@ -28,7 +28,7 @@ var environment_1 = require("../../../environments/environment");
 var globalRecaptchaSettings = {
     siteKey: environment_1.environment.recaptchaSiteKey,
 };
-var AuthModule = (function () {
+var AuthModule = /** @class */ (function () {
     function AuthModule() {
     }
     AuthModule = __decorate([

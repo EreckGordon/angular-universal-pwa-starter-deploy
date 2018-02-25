@@ -17,7 +17,7 @@ var material_1 = require("@angular/material");
 var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
 var jwt = require("jsonwebtoken");
-var ResetPasswordComponent = (function () {
+var ResetPasswordComponent = /** @class */ (function () {
     function ResetPasswordComponent(fb, auth, router, route, snackbar) {
         this.fb = fb;
         this.auth = auth;
@@ -52,8 +52,7 @@ var ResetPasswordComponent = (function () {
             else if (_this.auth.isHttpErrorResponse(user)) {
                 _this.handlePasswordError(user);
             }
-            else if (_this.auth.isAuthenticatedUser(user) &&
-                user.email === _this.decodedToken['email']) {
+            else if (_this.auth.isAuthenticatedUser(user) && user.email === _this.decodedToken['email']) {
                 _this.router.navigate(['/account']);
             }
         });

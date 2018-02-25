@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var seo_service_1 = require("../../shared/seo.service");
-var AboutComponent = (function () {
+var AboutComponent = /** @class */ (function () {
     function AboutComponent(seoService) {
         this.seoService = seoService;
         this.keywords = 'angular, universal, angular-cli, PWA, expressjs';

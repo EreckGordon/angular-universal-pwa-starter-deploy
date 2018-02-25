@@ -12,7 +12,7 @@ var router_1 = require("@angular/router");
 var blog_routing_1 = require("./blog.routing");
 var blog_component_1 = require("./blog.component");
 var blog_service_1 = require("./blog.service");
-var BlogModule = (function () {
+var BlogModule = /** @class */ (function () {
     function BlogModule() {
     }
     BlogModule = __decorate([

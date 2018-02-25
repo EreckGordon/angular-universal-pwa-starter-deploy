@@ -10,7 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Article = (function () {
+var Article = /** @class */ (function () {
     function Article() {
     }
     __decorate([

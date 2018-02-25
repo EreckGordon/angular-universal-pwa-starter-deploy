@@ -14,17 +14,12 @@ var index_1 = require("../../shared/custom-material-module/index");
 var forms_1 = require("@angular/forms");
 var home_component_1 = require("./home.component");
 var home_service_1 = require("./home.service");
-var HomeModule = (function () {
+var HomeModule = /** @class */ (function () {
     function HomeModule() {
     }
     HomeModule = __decorate([
         core_1.NgModule({
-            imports: [
-                common_1.CommonModule,
-                router_1.RouterModule.forChild(home_routing_1.routes),
-                index_1.CustomMaterialModule,
-                forms_1.ReactiveFormsModule,
-            ],
+            imports: [common_1.CommonModule, router_1.RouterModule.forChild(home_routing_1.routes), index_1.CustomMaterialModule, forms_1.ReactiveFormsModule],
             declarations: [home_component_1.HomeComponent],
             providers: [home_service_1.HomeService],
         })

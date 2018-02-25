@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
-var AppController = (function () {
+var AppController = /** @class */ (function () {
     function AppController() {
         this.renderCache = {};
     }

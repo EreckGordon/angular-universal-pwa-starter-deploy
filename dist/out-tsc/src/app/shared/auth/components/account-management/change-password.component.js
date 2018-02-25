@@ -23,7 +23,7 @@ var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
 var material_1 = require("@angular/material");
 var auth_service_1 = require("../../auth.service");
-var ChangePasswordComponent = (function () {
+var ChangePasswordComponent = /** @class */ (function () {
     function ChangePasswordComponent(auth, fb, snackbar) {
         this.auth = auth;
         this.fb = fb;

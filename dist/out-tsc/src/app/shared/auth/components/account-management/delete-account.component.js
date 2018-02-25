@@ -16,7 +16,7 @@ var auth_service_1 = require("../../auth.service");
 var confirm_delete_account_dialog_1 = require("./confirm-delete-account.dialog");
 var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
-var DeleteAccountComponent = (function () {
+var DeleteAccountComponent = /** @class */ (function () {
     function DeleteAccountComponent(auth, router, dialog) {
         this.auth = auth;
         this.router = router;

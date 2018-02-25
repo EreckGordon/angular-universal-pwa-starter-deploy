@@ -12,7 +12,7 @@ var router_1 = require("@angular/router");
 var about_routing_1 = require("./about.routing");
 var about_component_1 = require("./about.component");
 var about_service_1 = require("./about.service");
-var AboutModule = (function () {
+var AboutModule = /** @class */ (function () {
     function AboutModule() {
     }
     AboutModule = __decorate([

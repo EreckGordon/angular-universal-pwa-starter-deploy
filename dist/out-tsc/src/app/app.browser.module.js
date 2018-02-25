@@ -16,7 +16,7 @@ var app_common_module_1 = require("./app.common.module");
 var seo_service_1 = require("./shared/seo.service");
 var ngsw_update_service_1 = require("./shared/ngsw-update.service");
 var environment_1 = require("../environments/environment");
-var AppBrowserModule = (function () {
+var AppBrowserModule = /** @class */ (function () {
     function AppBrowserModule() {
     }
     AppBrowserModule = __decorate([

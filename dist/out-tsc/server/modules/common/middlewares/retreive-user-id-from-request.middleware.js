@@ -47,7 +47,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var security_service_1 = require("../security/security.service");
 var auth_service_1 = require("../../auth/auth.service");
-var RetrieveUserIdFromRequestMiddleware = (function () {
+var RetrieveUserIdFromRequestMiddleware = /** @class */ (function () {
     function RetrieveUserIdFromRequestMiddleware(securityService, authService) {
         this.securityService = securityService;
         this.authService = authService;
@@ -119,8 +119,7 @@ var RetrieveUserIdFromRequestMiddleware = (function () {
     };
     RetrieveUserIdFromRequestMiddleware = __decorate([
         common_1.Middleware(),
-        __metadata("design:paramtypes", [security_service_1.SecurityService,
-            auth_service_1.AuthService])
+        __metadata("design:paramtypes", [security_service_1.SecurityService, auth_service_1.AuthService])
     ], RetrieveUserIdFromRequestMiddleware);
     return RetrieveUserIdFromRequestMiddleware;
 }());

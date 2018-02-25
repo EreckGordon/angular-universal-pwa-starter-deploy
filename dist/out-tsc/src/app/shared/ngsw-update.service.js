@@ -16,7 +16,7 @@ var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/debounceTime");
 require("rxjs/add/operator/startWith");
 require("rxjs/add/operator/take");
-var NGSWUpdateService = (function () {
+var NGSWUpdateService = /** @class */ (function () {
     function NGSWUpdateService(swUpdate, snackBar) {
         var _this = this;
         this.swUpdate = swUpdate;

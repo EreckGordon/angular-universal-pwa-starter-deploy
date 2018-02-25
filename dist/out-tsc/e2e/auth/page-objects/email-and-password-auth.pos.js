@@ -6,7 +6,7 @@ var create_account_po_1 = require("./create-account.po");
 var request_password_reset_po_1 = require("./request-password-reset.po");
 var account_management_po_1 = require("./account-management.po");
 var delete_account_po_1 = require("./delete-account.po");
-var EmailAndPasswordAuthPages = (function () {
+var EmailAndPasswordAuthPages = /** @class */ (function () {
     function EmailAndPasswordAuthPages() {
         this.signInPage = new sign_in_po_1.SignInPage();
         this.createAccountPage = new create_account_po_1.CreateAccountPage();

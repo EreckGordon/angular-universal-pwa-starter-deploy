@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var protractor_1 = require("protractor");
 // $ = element(by.css())
 // $$ = element.all(by.css())
-var SignInPage = (function () {
+var SignInPage = /** @class */ (function () {
     function SignInPage() {
     }
     SignInPage.prototype.navigateToSignIn = function () {

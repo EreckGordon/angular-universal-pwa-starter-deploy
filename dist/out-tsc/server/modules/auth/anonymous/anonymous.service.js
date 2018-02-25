@@ -51,7 +51,7 @@ var common_1 = require("@nestjs/common");
 var typeorm_1 = require("typeorm");
 var user_entity_1 = require("../user.entity");
 var security_service_1 = require("../../common/security/security.service");
-var AnonymousService = (function () {
+var AnonymousService = /** @class */ (function () {
     function AnonymousService(userRepository, securityService) {
         this.userRepository = userRepository;
         this.securityService = securityService;

@@ -19,7 +19,7 @@ var environment_1 = require("../environments/environment");
 var app_nav_views_1 = require("./app-nav-views");
 var ngsw_update_service_1 = require("./shared/ngsw-update.service");
 var auth_service_1 = require("./shared/auth/auth.service");
-var AppComponent = (function () {
+var AppComponent = /** @class */ (function () {
     function AppComponent(router, injector, platformId, auth) {
         this.router = router;
         this.injector = injector;

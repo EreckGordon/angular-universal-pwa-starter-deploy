@@ -17,7 +17,7 @@ var material_1 = require("@angular/material");
 var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
 var ng_recaptcha_1 = require("ng-recaptcha");
-var CreateAccountComponent = (function () {
+var CreateAccountComponent = /** @class */ (function () {
     function CreateAccountComponent(fb, auth, router, snackbar) {
         this.fb = fb;
         this.auth = auth;
@@ -39,8 +39,7 @@ var CreateAccountComponent = (function () {
             else if (_this.auth.isAuthenticatedUser(user) && !user.isAnonymous) {
                 _this.router.navigate(['/account']);
             }
-            else if (_this.auth.isHttpErrorResponse(user) &&
-                user.error === 'Email already in use') {
+            else if (_this.auth.isHttpErrorResponse(user) && user.error === 'Email already in use') {
                 _this.auth.errorHandled();
                 _this.form.patchValue({ email: '' });
                 _this.recaptcha.reset();
@@ -68,7 +67,7 @@ var CreateAccountComponent = (function () {
     };
     CreateAccountComponent.prototype.createUserWithEmailAndPassword = function () {
         if (this.form.valid) {
-            this.auth.createEmailAndPasswordUser(this.form.value);
+            this.auth.createEmailAndPasswordUserOrUpgradeAnonymousToEmailAndPassword(this.form.value);
         }
         else {
             this.recaptcha.reset();
@@ -92,10 +91,7 @@ var CreateAccountComponent = (function () {
             selector: 'app-create-account',
             templateUrl: './create-account.component.html',
         }),
-        __metadata("design:paramtypes", [forms_1.FormBuilder,
-            auth_service_1.AuthService,
-            router_1.Router,
-            material_1.MatSnackBar])
+        __metadata("design:paramtypes", [forms_1.FormBuilder, auth_service_1.AuthService, router_1.Router, material_1.MatSnackBar])
     ], CreateAccountComponent);
     return CreateAccountComponent;
 }());

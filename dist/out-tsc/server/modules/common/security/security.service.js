@@ -55,7 +55,7 @@ var randomBytes = util.promisify(crypto.randomBytes);
 var signJwt = util.promisify(jwt.sign);
 var RSA_PRIVATE_KEY = fs.readFileSync(path.join(process.cwd(), 'private.key'));
 var RSA_PUBLIC_KEY = fs.readFileSync(path.join(process.cwd(), 'public.key'));
-var SecurityService = (function () {
+var SecurityService = /** @class */ (function () {
     function SecurityService() {
     }
     Object.defineProperty(SecurityService.prototype, "publicRSAKey", {
@@ -78,8 +78,8 @@ var SecurityService = (function () {
     SecurityService.prototype.createSessionToken = function (_a) {
         var roles = _a.roles, id = _a.id, loginProvider = _a.loginProvider;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, signJwt({
                             roles: roles,
                             loginProvider: loginProvider,
@@ -88,7 +88,7 @@ var SecurityService = (function () {
                             expiresIn: '2h',
                             subject: id,
                         })];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });
@@ -146,10 +146,10 @@ var SecurityService = (function () {
     SecurityService.prototype.createPasswordHash = function (_a) {
         var password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, argon2.hash(password)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });
@@ -157,10 +157,10 @@ var SecurityService = (function () {
     SecurityService.prototype.verifyPasswordHash = function (_a) {
         var passwordHash = _a.passwordHash, password = _a.password;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, argon2.verify(passwordHash, password)];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });

@@ -13,7 +13,7 @@ var core_1 = require("@angular/core");
 var Subject_1 = require("rxjs/Subject");
 var blog_service_1 = require("./blog.service");
 var seo_service_1 = require("../../shared/seo.service");
-var BlogComponent = (function () {
+var BlogComponent = /** @class */ (function () {
     function BlogComponent(seoService, blogService) {
         this.seoService = seoService;
         this.destroy = new Subject_1.Subject();

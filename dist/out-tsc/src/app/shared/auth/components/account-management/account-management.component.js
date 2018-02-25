@@ -14,12 +14,15 @@ var router_1 = require("@angular/router");
 var auth_service_1 = require("../../auth.service");
 var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
-var AccountManagementComponent = (function () {
+var AccountManagementComponent = /** @class */ (function () {
     function AccountManagementComponent(auth, router) {
         this.auth = auth;
         this.router = router;
         this.destroy = new Subject_1.Subject();
         this.showChangePassword = false;
+        this.hasEmailAndPasswordAuthProvider = false;
+        this.hasGoogleAuthProvider = false;
+        this.hasFacebookAuthProvider = false;
     }
     AccountManagementComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -29,6 +32,9 @@ var AccountManagementComponent = (function () {
             }
             if (_this.auth.isAuthenticatedUser(user)) {
                 _this.user = user;
+                _this.hasEmailAndPasswordAuthProvider = user.authProviders.includes('emailAndPassword');
+                _this.hasGoogleAuthProvider = user.authProviders.includes('google');
+                _this.hasFacebookAuthProvider = user.authProviders.includes('facebook');
             }
         });
     };

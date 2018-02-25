@@ -17,7 +17,7 @@ var material_1 = require("@angular/material");
 var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
 var ng_recaptcha_1 = require("ng-recaptcha");
-var SignInComponent = (function () {
+var SignInComponent = /** @class */ (function () {
     function SignInComponent(fb, auth, router, snackbar) {
         this.fb = fb;
         this.auth = auth;
@@ -39,8 +39,7 @@ var SignInComponent = (function () {
             else if (_this.auth.isAuthenticatedUser(user) && !user.isAnonymous) {
                 _this.router.navigate(['/account']);
             }
-            else if (_this.auth.isHttpErrorResponse(user) &&
-                user.error === 'user does not exist') {
+            else if (_this.auth.isHttpErrorResponse(user) && user.error === 'user does not exist') {
                 _this.auth.errorHandled();
                 _this.form.patchValue({ email: '', password: '' });
                 _this.recaptcha.reset();
@@ -76,10 +75,7 @@ var SignInComponent = (function () {
             selector: 'app-sign-in',
             templateUrl: './sign-in.component.html',
         }),
-        __metadata("design:paramtypes", [forms_1.FormBuilder,
-            auth_service_1.AuthService,
-            router_1.Router,
-            material_1.MatSnackBar])
+        __metadata("design:paramtypes", [forms_1.FormBuilder, auth_service_1.AuthService, router_1.Router, material_1.MatSnackBar])
     ], SignInComponent);
     return SignInComponent;
 }());

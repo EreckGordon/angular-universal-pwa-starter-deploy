@@ -17,9 +17,22 @@ exports.routes = [
     { path: 'reset-password', component: reset_password_component_1.ResetPasswordComponent },
     {
         path: 'account',
-        component: account_management_component_1.AccountManagementComponent,
+        children: [
+            {
+                path: '',
+                component: account_management_component_1.AccountManagementComponent,
+            },
+            {
+                path: 'social',
+                loadChildren: './social-module/social-auth.module#SocialAuthModule',
+            },
+        ],
         canActivate: [auth_guard_1.AuthGuard],
     },
     { path: 'delete-account', component: delete_account_component_1.DeleteAccountComponent },
+    {
+        path: 'social-sign-in',
+        loadChildren: './social-module/social-auth.module#SocialAuthModule',
+    },
 ];
 //# sourceMappingURL=auth.routing.js.map

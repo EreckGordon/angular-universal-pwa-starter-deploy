@@ -10,7 +10,7 @@ var common_1 = require("@nestjs/common");
 var app_controller_1 = require("./app.controller");
 var auth_module_1 = require("./auth/auth.module");
 var hello_world_controller_1 = require("./hello-world.controller");
-var ApplicationModule = (function () {
+var ApplicationModule = /** @class */ (function () {
     function ApplicationModule() {
     }
     ApplicationModule = __decorate([

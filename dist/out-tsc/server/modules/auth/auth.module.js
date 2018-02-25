@@ -12,10 +12,12 @@ var auth_controller_1 = require("./auth.controller");
 var auth_providers_1 = require("./auth.providers");
 var auth_service_1 = require("./auth.service");
 var email_and_password_service_1 = require("./email-and-password/email-and-password.service");
+var google_service_1 = require("./google/google.service");
+var facebook_service_1 = require("./facebook/facebook.service");
 var anonymous_service_1 = require("./anonymous/anonymous.service");
 var common_module_1 = require("../common/common.module");
 var middlewares_1 = require("../common/middlewares");
-var AuthModule = (function () {
+var AuthModule = /** @class */ (function () {
     function AuthModule() {
     }
     AuthModule.prototype.configure = function (consumer) {
@@ -27,7 +29,7 @@ var AuthModule = (function () {
     AuthModule = __decorate([
         common_1.Module({
             modules: [common_module_1.CommonModule, database_module_1.DatabaseModule],
-            components: auth_providers_1.authProviders.concat([auth_service_1.AuthService, email_and_password_service_1.EmailAndPasswordService, anonymous_service_1.AnonymousService]),
+            components: auth_providers_1.authProviders.concat([auth_service_1.AuthService, email_and_password_service_1.EmailAndPasswordService, anonymous_service_1.AnonymousService, google_service_1.GoogleService, facebook_service_1.FacebookService]),
             controllers: [auth_controller_1.AuthController],
         })
     ], AuthModule);

@@ -39,7 +39,7 @@ var MaterialModules = [
     platform_1.PlatformModule,
     material_1.MatCommonModule,
 ];
-var CustomMaterialModule = (function () {
+var CustomMaterialModule = /** @class */ (function () {
     function CustomMaterialModule() {
     }
     CustomMaterialModule = __decorate([

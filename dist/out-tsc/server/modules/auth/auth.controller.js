@@ -48,10 +48,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
+var social_user_class_1 = require("../../../src/app/shared/auth/social-module/classes/social-user.class");
 var auth_service_1 = require("./auth.service");
 var roles_guard_1 = require("../common/guards/roles.guard");
 var roles_decorator_1 = require("../common/decorators/roles.decorator");
-var AuthController = (function () {
+var AuthController = /** @class */ (function () {
     function AuthController(authService) {
         this.authService = authService;
         this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
@@ -65,10 +66,29 @@ var AuthController = (function () {
                     case 1:
                         loginResult = _a.sent();
                         if (loginResult.apiCallResult) {
-                            this.sendSuccessfulUserResult(res, loginResult.result);
+                            this.sendSuccessfulUserResult(res, loginResult.result, 'emailAndPassword');
                         }
                         else {
                             res.status(401).json(loginResult.result.error);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.authenticateSocialUser = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var authenticateSocialUserResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.authService.authenticateSocialUser(body)];
+                    case 1:
+                        authenticateSocialUserResult = _a.sent();
+                        if (authenticateSocialUserResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, authenticateSocialUserResult.result, body.provider);
+                        }
+                        else {
+                            res.status(401).json(authenticateSocialUserResult.result.error);
                         }
                         return [2 /*return*/];
                 }
@@ -84,7 +104,7 @@ var AuthController = (function () {
                     case 1:
                         createUserResult = _a.sent();
                         if (createUserResult.apiCallResult) {
-                            this.sendSuccessfulUserResult(res, createUserResult.result);
+                            this.sendSuccessfulUserResult(res, createUserResult.result, 'emailAndPassword');
                         }
                         else {
                             switch (createUserResult.result.error) {
@@ -113,7 +133,7 @@ var AuthController = (function () {
                     case 1:
                         createAnonymousUserResult = _a.sent();
                         if (createAnonymousUserResult.apiCallResult) {
-                            this.sendSuccessfulUserResult(res, createAnonymousUserResult.result);
+                            this.sendSuccessfulUserResult(res, createAnonymousUserResult.result, 'anonymous');
                         }
                         else {
                             res.status(401).json(createAnonymousUserResult.result.error);
@@ -123,16 +143,19 @@ var AuthController = (function () {
             });
         });
     };
-    AuthController.prototype.upgradeAnonymousUser = function (req, res, body) {
+    AuthController.prototype.upgradeAnonymousUserToEmailAndPassword = function (req, res, body) {
         return __awaiter(this, void 0, void 0, function () {
-            var upgradeResult;
+            var userId, upgradeResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.authService.upgradeAnonymousUserToEmailAndPassword(req, body)];
+                    case 0: return [4 /*yield*/, req['user']['sub']];
                     case 1:
+                        userId = _a.sent();
+                        return [4 /*yield*/, this.authService.upgradeAnonymousUserToEmailAndPassword(userId, body)];
+                    case 2:
                         upgradeResult = _a.sent();
                         if (upgradeResult.apiCallResult) {
-                            this.sendSuccessfulUserResult(res, upgradeResult.result);
+                            this.sendSuccessfulUserResult(res, upgradeResult.result, 'emailAndPassword');
                         }
                         else {
                             switch (upgradeResult.result.error) {
@@ -143,6 +166,57 @@ var AuthController = (function () {
                                     res.status(401).json(upgradeResult.result.error);
                                     break;
                             }
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.upgradeAnonymousUserToSocial = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userId, upgradeResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req['user']['sub']];
+                    case 1:
+                        userId = _a.sent();
+                        return [4 /*yield*/, this.authService.upgradeAnonymousUserToSocial(userId, body)];
+                    case 2:
+                        upgradeResult = _a.sent();
+                        if (upgradeResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, upgradeResult.result, body.provider);
+                        }
+                        else {
+                            switch (upgradeResult.result.error) {
+                                case 'User is not anonymous':
+                                    res.status(409).json({ error: 'User is not anonymous' });
+                                    break;
+                                default:
+                                    res.status(401).json(upgradeResult.result.error);
+                                    break;
+                            }
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    AuthController.prototype.linkProviderToAccount = function (req, res, body) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userId, linkProviderToAccountResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, req['user']['sub']];
+                    case 1:
+                        userId = _a.sent();
+                        return [4 /*yield*/, this.authService.linkProviderToAccount(userId, body)];
+                    case 2:
+                        linkProviderToAccountResult = _a.sent();
+                        if (linkProviderToAccountResult.apiCallResult) {
+                            this.sendSuccessfulUserResult(res, linkProviderToAccountResult.result, body.provider);
+                        }
+                        else {
+                            res.status(401).json(linkProviderToAccountResult.result.error);
                         }
                         return [2 /*return*/];
                 }
@@ -177,7 +251,7 @@ var AuthController = (function () {
                     case 1:
                         resetPasswordResult = _a.sent();
                         if (resetPasswordResult.apiCallResult) {
-                            this.sendSuccessfulUserResult(res, resetPasswordResult.result);
+                            this.sendSuccessfulUserResult(res, resetPasswordResult.result, 'emailAndPassword');
                         }
                         else {
                             res.status(401).json(resetPasswordResult.result.error);
@@ -221,7 +295,7 @@ var AuthController = (function () {
                     case 2:
                         reauthenticateResult = _a.sent();
                         if (!reauthenticateResult.apiCallResult) return [3 /*break*/, 3];
-                        this.sendUserDetails(reauthenticateResult.result.user, res);
+                        this.sendUserDetails(reauthenticateResult.result.user, res, jwt['loginProvider']);
                         return [3 /*break*/, 5];
                     case 3:
                         res.clearCookie('SESSIONID');
@@ -274,42 +348,65 @@ var AuthController = (function () {
             });
         });
     };
-    AuthController.prototype.sendSuccessfulUserResult = function (res, authServiceResult) {
+    AuthController.prototype.sendSuccessfulUserResult = function (res, authServiceResult, loginProvider) {
         var user = authServiceResult.user, sessionToken = authServiceResult.sessionToken, csrfToken = authServiceResult.csrfToken;
         res.cookie('SESSIONID', sessionToken, {
             httpOnly: true,
             secure: this.useSecure,
         });
         res.cookie('XSRF-TOKEN', csrfToken);
-        this.sendUserDetails(user, res);
+        this.sendUserDetails(user, res, loginProvider);
     };
-    AuthController.prototype.sendUserDetails = function (user, res) {
+    AuthController.prototype.sendUserDetails = function (user, res, loginProvider) {
         var email;
         try {
-            email = user.emailAndPasswordProvider.email;
+            switch (loginProvider) {
+                case 'emailAndPassword':
+                    email = user.emailAndPasswordProvider.email;
+                    break;
+                case 'google':
+                    email = user.googleProvider.email;
+                    break;
+                case 'facebook':
+                    email = user.facebookProvider.email;
+                    break;
+            }
         }
         catch (e) {
             email = null;
         }
+        var authProviders = [];
+        try {
+            user.emailAndPasswordProviderId !== null ? authProviders.push('emailAndPassword') : null;
+            user.facebookProviderId !== null ? authProviders.push('facebook') : null;
+            user.googleProviderId !== null ? authProviders.push('google') : null;
+        }
+        catch (e) { }
         res.status(200).json({
             id: user.id,
             isAnonymous: user.isAnonymous,
             roles: user.roles,
             email: email,
+            authProviders: authProviders,
         });
     };
     __decorate([
         common_1.Post('login-email-and-password-user'),
-        __param(0, common_1.Res()),
-        __param(1, common_1.Body()),
+        __param(0, common_1.Res()), __param(1, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "loginEmailAndPasswordUser", null);
     __decorate([
+        common_1.Post('authenticate-social-user'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, social_user_class_1.SocialUser]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "authenticateSocialUser", null);
+    __decorate([
         common_1.Post('create-email-and-password-user'),
-        __param(0, common_1.Res()),
-        __param(1, common_1.Body()),
+        __param(0, common_1.Res()), __param(1, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
@@ -323,27 +420,36 @@ var AuthController = (function () {
     ], AuthController.prototype, "createAnonymousUser", null);
     __decorate([
         common_1.Patch('upgrade-anonymous-user-to-email-and-password'),
-        __param(0, common_1.Req()),
-        __param(1, common_1.Res()),
-        __param(2, common_1.Body()),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Object]),
         __metadata("design:returntype", Promise)
-    ], AuthController.prototype, "upgradeAnonymousUser", null);
+    ], AuthController.prototype, "upgradeAnonymousUserToEmailAndPassword", null);
+    __decorate([
+        common_1.Patch('upgrade-anonymous-user-to-social'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "upgradeAnonymousUserToSocial", null);
+    __decorate([
+        common_1.Patch('link-provider-to-account'),
+        roles_decorator_1.Roles('user'),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], AuthController.prototype, "linkProviderToAccount", null);
     __decorate([
         common_1.Post('request-password-reset'),
-        __param(0, common_1.Req()),
-        __param(1, common_1.Res()),
-        __param(2, common_1.Body()),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Object]),
         __metadata("design:returntype", Promise)
     ], AuthController.prototype, "requestPasswordReset", null);
     __decorate([
         common_1.Post('reset-password'),
-        __param(0, common_1.Req()),
-        __param(1, common_1.Res()),
-        __param(2, common_1.Body()),
+        __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object, Object]),
         __metadata("design:returntype", Promise)

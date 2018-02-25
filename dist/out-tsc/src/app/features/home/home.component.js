@@ -15,7 +15,7 @@ var forms_1 = require("@angular/forms");
 var seo_service_1 = require("../../shared/seo.service");
 var auth_service_1 = require("../../shared/auth/auth.service");
 require("rxjs/add/operator/take");
-var HomeComponent = (function () {
+var HomeComponent = /** @class */ (function () {
     function HomeComponent(seoService, http, fb, authService) {
         this.seoService = seoService;
         this.http = http;
@@ -63,7 +63,7 @@ var HomeComponent = (function () {
     HomeComponent.prototype.createEmailAndPasswordUser = function () {
         var email = this.createUserForm.value.email;
         var password = this.createUserForm.value.password;
-        this.authService.createEmailAndPasswordUser({ email: email, password: password });
+        this.authService.createEmailAndPasswordUserOrUpgradeAnonymousToEmailAndPassword({ email: email, password: password });
     };
     HomeComponent.prototype.createAnonymousUser = function () {
         this.authService.createAnonymousUser();
@@ -71,7 +71,7 @@ var HomeComponent = (function () {
     HomeComponent.prototype.upgradeAnonymousUserToEmailAndPasswordUser = function () {
         var email = this.upgradeAnonymousUserForm.value.email;
         var password = this.upgradeAnonymousUserForm.value.password;
-        this.authService.upgradeAnonymousUserToEmailAndPasswordUser({
+        this.authService.createEmailAndPasswordUserOrUpgradeAnonymousToEmailAndPassword({
             email: email,
             password: password,
         });
@@ -81,10 +81,7 @@ var HomeComponent = (function () {
             selector: 'app-home',
             templateUrl: './home.component.html',
         }),
-        __metadata("design:paramtypes", [seo_service_1.SEOService,
-            http_1.HttpClient,
-            forms_1.FormBuilder,
-            auth_service_1.AuthService])
+        __metadata("design:paramtypes", [seo_service_1.SEOService, http_1.HttpClient, forms_1.FormBuilder, auth_service_1.AuthService])
     ], HomeComponent);
     return HomeComponent;
 }());

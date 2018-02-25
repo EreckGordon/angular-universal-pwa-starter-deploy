@@ -17,7 +17,7 @@ var Subject_1 = require("rxjs/Subject");
 require("rxjs/add/operator/takeUntil");
 var material_1 = require("@angular/material");
 var ng_recaptcha_1 = require("ng-recaptcha");
-var RequestPasswordResetComponent = (function () {
+var RequestPasswordResetComponent = /** @class */ (function () {
     function RequestPasswordResetComponent(fb, auth, router, snackbar) {
         this.fb = fb;
         this.auth = auth;
@@ -35,8 +35,7 @@ var RequestPasswordResetComponent = (function () {
         this.auth.user$.takeUntil(this.destroy).subscribe(function (user) {
             if (user === null) {
             }
-            else if (_this.auth.isHttpErrorResponse(user) &&
-                user.error === 'user does not exist') {
+            else if (_this.auth.isHttpErrorResponse(user) && user.error === 'user does not exist') {
                 _this.requestSent = false;
                 _this.form.patchValue({ email: '' });
                 _this.recaptcha.reset();
@@ -63,10 +62,7 @@ var RequestPasswordResetComponent = (function () {
             selector: 'app-request-password-reset',
             templateUrl: './request-password-reset.component.html',
         }),
-        __metadata("design:paramtypes", [forms_1.FormBuilder,
-            auth_service_1.AuthService,
-            router_1.Router,
-            material_1.MatSnackBar])
+        __metadata("design:paramtypes", [forms_1.FormBuilder, auth_service_1.AuthService, router_1.Router, material_1.MatSnackBar])
     ], RequestPasswordResetComponent);
     return RequestPasswordResetComponent;
 }());

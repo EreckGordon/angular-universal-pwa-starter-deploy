@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* tslint:disable: component-class-suffix */
 var core_1 = require("@angular/core");
 var material_1 = require("@angular/material");
-var ConfirmDeleteAccountDialog = (function () {
+var ConfirmDeleteAccountDialog = /** @class */ (function () {
     function ConfirmDeleteAccountDialog(dialogRef) {
         this.dialogRef = dialogRef;
     }

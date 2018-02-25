@@ -15,7 +15,7 @@ var index_1 = require("./shared/custom-material-module/index");
 var auth_module_1 = require("./shared/auth/auth.module");
 var app_routing_1 = require("./app.routing");
 var not_found404_component_1 = require("./features/not-found404.component");
-var AppCommonModule = (function () {
+var AppCommonModule = /** @class */ (function () {
     function AppCommonModule() {
     }
     AppCommonModule = __decorate([

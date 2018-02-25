@@ -13,18 +13,12 @@ var module_map_ngfactory_loader_1 = require("@nguniversal/module-map-ngfactory-l
 var app_component_1 = require("./app.component");
 var app_common_module_1 = require("./app.common.module");
 var seo_service_1 = require("./shared/seo.service");
-var AppServerModule = (function () {
+var AppServerModule = /** @class */ (function () {
     function AppServerModule() {
     }
     AppServerModule = __decorate([
         core_1.NgModule({
-            imports: [
-                app_common_module_1.AppCommonModule,
-                animations_1.NoopAnimationsModule,
-                platform_server_1.ServerTransferStateModule,
-                platform_server_1.ServerModule,
-                module_map_ngfactory_loader_1.ModuleMapLoaderModule,
-            ],
+            imports: [app_common_module_1.AppCommonModule, animations_1.NoopAnimationsModule, platform_server_1.ServerTransferStateModule, platform_server_1.ServerModule, module_map_ngfactory_loader_1.ModuleMapLoaderModule],
             bootstrap: [app_component_1.AppComponent],
             providers: [seo_service_1.SEOService],
         })

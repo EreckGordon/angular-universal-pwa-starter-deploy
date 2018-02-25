@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
 var security_service_1 = require("./security/security.service");
 var mailgun_service_1 = require("./mailgun.service");
-var CommonModule = (function () {
+var CommonModule = /** @class */ (function () {
     function CommonModule() {
     }
     CommonModule = __decorate([

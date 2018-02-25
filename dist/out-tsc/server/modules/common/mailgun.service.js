@@ -46,15 +46,15 @@ var mailgun = require('mailgun-js')({
     apiKey: process.env.MAILGUN_API_KEY,
     domain: process.env.MAILGUN_EMAIL_DOMAIN,
 });
-var MailgunService = (function () {
+var MailgunService = /** @class */ (function () {
     function MailgunService() {
     }
     MailgunService.prototype.sendPasswordResetEmail = function (_a) {
         var email = _a.email, token = _a.token;
         return __awaiter(this, void 0, void 0, function () {
             var html;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         html = "\n            <div>To reset your password for " + process.env.SITENAME_BASE + ", please follow\n            <a href=\"" + process.env.SITE_URL + "/reset-password/?token=" + token + "\">\n                this link\n            </a></div><br>\n\n            <div>\n            The link will expire in 10 minutes.\n            </div>\n        ";
                         return [4 /*yield*/, mailgun.messages().send({
@@ -63,7 +63,7 @@ var MailgunService = (function () {
                                 subject: "Password Reset Request for " + process.env.SITENAME_BASE,
                                 html: html,
                             })];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 1: return [2 /*return*/, _b.sent()];
                 }
             });
         });
