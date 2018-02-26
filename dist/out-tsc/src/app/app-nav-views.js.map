@@ -1,1 +1,0 @@
-{"version":3,"file":"app-nav-views.js","sourceRoot":"","sources":["../../../../src/app/app-nav-views.ts"],"names":[],"mappings":";;AAAa,QAAA,KAAK,GAAa;IAC3B;QACI,IAAI,EAAE,OAAO;QACb,IAAI,EAAE,mBAAmB;QACzB,IAAI,EAAE,CAAC,OAAO,CAAC;KAClB;IACD;QACI,IAAI,EAAE,MAAM;QACZ,IAAI,EAAE,aAAa;QACnB,IAAI,EAAE,CAAC,MAAM,CAAC;KACjB;CACJ,CAAC"}
