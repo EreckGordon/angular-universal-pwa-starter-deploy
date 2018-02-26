@@ -36,3 +36,7 @@ testem.log
 .DS_Store
 Thumbs.db
 .env
+
+#keys
+private.key
+public.key
