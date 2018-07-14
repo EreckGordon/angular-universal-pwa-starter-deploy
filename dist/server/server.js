@@ -27,7 +27,7 @@ const compression = require("compression");
 const app_module_1 = require("./modules/app.module");
 const DIST_FOLDER = path.join(process.cwd(), 'dist');
 const DIST_BROWSER_FOLDER = path.join(DIST_FOLDER, 'dist-browser');
-const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require(path.join(DIST_FOLDER, 'dist-bridge', 'main.bundle'));
+const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require(path.join(DIST_FOLDER, 'dist-bridge', 'main'));
 core_2.enableProdMode();
 const configuredNgExpressEngine = express_engine_1.ngExpressEngine({
     bootstrap: AppServerModuleNgFactory,
@@ -37,13 +37,15 @@ const server = express();
 server.engine('html', configuredNgExpressEngine);
 server.set('view engine', 'html');
 server.set('views', DIST_BROWSER_FOLDER);
+const frontEndPort = 4200;
+const backEndPort = 8000;
 const options = {
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'x-xsrf-token'],
     credentials: true,
     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
     origin: [
-        'http://localhost:4200',
-        'http://localhost:8000',
+        `http://localhost:${frontEndPort}`,
+        `http://localhost:${backEndPort}`,
         'https://universal-demo.ereckgordon.com',
         'https://www.universal-demo.ereckgordon.com',
     ],
@@ -60,7 +62,7 @@ server.options('*', cors(options));
 function bootstrap() {
     return __awaiter(this, void 0, void 0, function* () {
         const app = yield core_1.NestFactory.create(app_module_1.ApplicationModule, server, {});
-        yield app.listen(8000);
+        yield app.listen(backEndPort);
     });
 }
 bootstrap();

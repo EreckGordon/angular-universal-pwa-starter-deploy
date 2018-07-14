@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const social_user_class_1 = require("../../../src/app/shared/auth/social-module/classes/social-user.class");
+const social_user_class_1 = require("../../../client/app/shared/auth/social-module/classes/social-user.class");
 const auth_service_1 = require("./auth.service");
 const roles_guard_1 = require("../common/guards/roles.guard");
 const roles_decorator_1 = require("../common/decorators/roles.decorator");
@@ -30,7 +30,7 @@ let AuthController = class AuthController {
         this.authService = authService;
         this.useSecure = process.env.SESSION_ID_SECURE_COOKIE === 'true';
     }
-    loginEmailAndPasswordUser(res, body) {
+    loginEmailAndPasswordUser(req, res, body) {
         return __awaiter(this, void 0, void 0, function* () {
             const loginResult = yield this.authService.loginEmailAndPasswordUser(body);
             if (loginResult.apiCallResult) {
@@ -87,7 +87,8 @@ let AuthController = class AuthController {
     upgradeAnonymousUserToEmailAndPassword(req, res, body) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = yield req['user']['sub'];
-            const upgradeResult = yield this.authService.upgradeAnonymousUserToEmailAndPassword(userId, body);
+            const refreshToken = yield req['user']['refreshToken'];
+            const upgradeResult = yield this.authService.upgradeAnonymousUserToEmailAndPassword(userId, body, refreshToken);
             if (upgradeResult.apiCallResult) {
                 this.sendSuccessfulUserResult(res, upgradeResult.result, 'emailAndPassword');
             }
@@ -125,7 +126,8 @@ let AuthController = class AuthController {
     linkProviderToAccount(req, res, body) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = yield req['user']['sub'];
-            const linkProviderToAccountResult = yield this.authService.linkProviderToAccount(userId, body);
+            const refreshToken = yield req['user']['refreshToken'];
+            const linkProviderToAccountResult = yield this.authService.linkProviderToAccount(userId, body, refreshToken);
             if (linkProviderToAccountResult.apiCallResult) {
                 this.sendSuccessfulUserResult(res, linkProviderToAccountResult.result, body.provider);
             }
@@ -179,6 +181,20 @@ let AuthController = class AuthController {
                 res.clearCookie('SESSIONID');
                 yield res.clearCookie('XSRF-TOKEN');
                 res.status(401).json(reauthenticateResult.result.error);
+            }
+        });
+    }
+    disavowAllRefreshTokens(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userId = yield req['user']['sub'];
+            const disavowAllRefreshTokensResult = yield this.authService.deleteAllRefreshTokensAssociatedWithUser(userId);
+            if (disavowAllRefreshTokensResult.apiCallResult) {
+                res.clearCookie('SESSIONID');
+                yield res.clearCookie('XSRF-TOKEN');
+                return res.status(200).json({ result: 'successfully disavowed all refresh tokens' });
+            }
+            else {
+                res.status(401).json(disavowAllRefreshTokensResult.result.error);
             }
         });
     }
@@ -248,9 +264,9 @@ let AuthController = class AuthController {
 };
 __decorate([
     common_1.Post('login-email-and-password-user'),
-    __param(0, common_1.Res()), __param(1, common_1.Body()),
+    __param(0, common_1.Req()), __param(1, common_1.Res()), __param(2, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginEmailAndPasswordUser", null);
 __decorate([
@@ -325,6 +341,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "reauthenticateUser", null);
+__decorate([
+    common_1.Post('disavow-all-refresh-tokens'),
+    roles_decorator_1.Roles('user'),
+    __param(0, common_1.Req()), __param(1, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "disavowAllRefreshTokens", null);
 __decorate([
     common_1.Post('delete-account'),
     roles_decorator_1.Roles('user'),

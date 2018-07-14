@@ -7,17 +7,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const security_service_1 = require("./security/security.service");
-const mailgun_service_1 = require("./mailgun.service");
-const common_providers_1 = require("./common.providers");
-const database_module_1 = require("../database/database.module");
-let CommonModule = class CommonModule {
+const rxjs_1 = require("rxjs");
+let AuthCache = class AuthCache {
+    constructor() {
+        this.wsReplaySubject = new rxjs_1.ReplaySubject(1);
+        this.wsObservable = this.wsReplaySubject.asObservable();
+    }
+    addData(data) {
+        this.wsReplaySubject.next(data);
+    }
 };
-CommonModule = __decorate([
-    common_1.Module({
-        imports: [database_module_1.DatabaseModule, ...common_providers_1.commonProviders],
-        providers: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
-        exports: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
-    })
-], CommonModule);
-exports.CommonModule = CommonModule;
+AuthCache = __decorate([
+    common_1.Injectable()
+], AuthCache);
+exports.AuthCache = AuthCache;

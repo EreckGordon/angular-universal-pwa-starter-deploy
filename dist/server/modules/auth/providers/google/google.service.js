@@ -22,11 +22,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
 const GoogleAuthLibrary = require("google-auth-library");
-const environment_1 = require("../../../../src/environments/environment");
-const user_entity_1 = require("../user.entity");
+const environment_1 = require("../../../../../environments/environment");
+const user_entity_1 = require("../../user.entity");
 const google_provider_entity_1 = require("./google-provider.entity");
-const security_service_1 = require("../../common/security/security.service");
+const security_service_1 = require("../../../common/security/security.service");
 let GoogleService = class GoogleService {
     constructor(userRepository, googleProviderRepository, securityService) {
         this.userRepository = userRepository;
@@ -118,7 +119,7 @@ let GoogleService = class GoogleService {
             return result;
         });
     }
-    linkProviderToExistingAccount(user, socialUser) {
+    linkProviderToExistingAccount(user, socialUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedUser = user;
             const googleProvider = new google_provider_entity_1.GoogleProvider();
@@ -134,6 +135,7 @@ let GoogleService = class GoogleService {
                 roles: updatedUser.roles,
                 id: updatedUser.id,
                 loginProvider: 'google',
+                refreshToken,
             });
             const csrfToken = yield this.securityService.createCsrfToken();
             const result = { user: updatedUser, sessionToken, csrfToken };
@@ -152,9 +154,9 @@ let GoogleService = class GoogleService {
     }
 };
 GoogleService = __decorate([
-    common_1.Component(),
-    __param(0, common_1.Inject('UserRepositoryToken')),
-    __param(1, common_1.Inject('GoogleProviderRepositoryToken')),
+    common_1.Injectable(),
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
+    __param(1, typeorm_2.InjectRepository(google_provider_entity_1.GoogleProvider)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         typeorm_1.Repository,
         security_service_1.SecurityService])

@@ -12,7 +12,7 @@ let DatabaseModule = class DatabaseModule {
 };
 DatabaseModule = __decorate([
     common_1.Module({
-        components: [...database_providers_1.databaseProviders],
+        imports: [...database_providers_1.databaseProviders],
         exports: [...database_providers_1.databaseProviders],
     })
 ], DatabaseModule);

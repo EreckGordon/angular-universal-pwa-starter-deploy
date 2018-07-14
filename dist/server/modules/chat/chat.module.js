@@ -7,17 +7,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const security_service_1 = require("./security/security.service");
-const mailgun_service_1 = require("./mailgun.service");
-const common_providers_1 = require("./common.providers");
 const database_module_1 = require("../database/database.module");
-let CommonModule = class CommonModule {
+const auth_providers_1 = require("../auth/providers/auth.providers");
+const chat_providers_1 = require("./providers/chat.providers");
+const chat_service_1 = require("./chat.service");
+const chat_gateway_1 = require("./gateways/chat.gateway");
+const chat_cache_1 = require("./chat.cache");
+const common_module_1 = require("../common/common.module");
+let ChatModule = class ChatModule {
 };
-CommonModule = __decorate([
+ChatModule = __decorate([
     common_1.Module({
-        imports: [database_module_1.DatabaseModule, ...common_providers_1.commonProviders],
-        providers: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
-        exports: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
+        imports: [common_module_1.CommonModule, database_module_1.DatabaseModule, ...chat_providers_1.chatProviders, ...auth_providers_1.authProviders],
+        providers: [chat_service_1.ChatService, chat_gateway_1.ChatGateway, chat_cache_1.ChatCache],
     })
-], CommonModule);
-exports.CommonModule = CommonModule;
+], ChatModule);
+exports.ChatModule = ChatModule;

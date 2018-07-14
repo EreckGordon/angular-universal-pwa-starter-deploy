@@ -10,9 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
-const email_and_password_provider_entity_1 = require("./email-and-password/email-and-password-provider.entity");
-const google_provider_entity_1 = require("./google/google-provider.entity");
-const facebook_provider_entity_1 = require("./facebook/facebook-provider.entity");
+const email_and_password_provider_entity_1 = require("./providers/email-and-password/email-and-password-provider.entity");
+const google_provider_entity_1 = require("./providers/google/google-provider.entity");
+const facebook_provider_entity_1 = require("./providers/facebook/facebook-provider.entity");
+const message_entity_1 = require("../chat/message.entity");
+const chatroom_entity_1 = require("../chat/chatroom.entity");
 let User = class User {
 };
 __decorate([
@@ -58,6 +60,18 @@ __decorate([
     typeorm_1.JoinColumn(),
     __metadata("design:type", facebook_provider_entity_1.FacebookProvider)
 ], User.prototype, "facebookProvider", void 0);
+__decorate([
+    typeorm_1.ManyToMany(type => chatroom_entity_1.Chatroom, chatroom => chatroom.populatedBy),
+    __metadata("design:type", Array)
+], User.prototype, "chatrooms", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => message_entity_1.Message, message => message.user),
+    __metadata("design:type", Array)
+], User.prototype, "messages", void 0);
+__decorate([
+    typeorm_1.OneToMany(type => chatroom_entity_1.Chatroom, chatroom => chatroom.ownedBy),
+    __metadata("design:type", Array)
+], User.prototype, "chatroomOwner", void 0);
 User = __decorate([
     typeorm_1.Entity()
 ], User);

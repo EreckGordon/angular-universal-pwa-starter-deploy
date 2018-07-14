@@ -7,17 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const security_service_1 = require("./security/security.service");
-const mailgun_service_1 = require("./mailgun.service");
-const common_providers_1 = require("./common.providers");
-const database_module_1 = require("../database/database.module");
-let CommonModule = class CommonModule {
+const server_side_rendering_controller_1 = require("./server-side-rendering.controller");
+let ServerSideRenderingModule = class ServerSideRenderingModule {
 };
-CommonModule = __decorate([
+ServerSideRenderingModule = __decorate([
     common_1.Module({
-        imports: [database_module_1.DatabaseModule, ...common_providers_1.commonProviders],
-        providers: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
-        exports: [security_service_1.SecurityService, mailgun_service_1.MailgunService],
+        controllers: [server_side_rendering_controller_1.ServerSideRenderingController],
     })
-], CommonModule);
-exports.CommonModule = CommonModule;
+], ServerSideRenderingModule);
+exports.ServerSideRenderingModule = ServerSideRenderingModule;

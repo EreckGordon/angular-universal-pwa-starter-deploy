@@ -22,14 +22,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
-const email_and_password_service_1 = require("./email-and-password/email-and-password.service");
-const anonymous_service_1 = require("./anonymous/anonymous.service");
-const google_service_1 = require("./google/google.service");
-const facebook_service_1 = require("./facebook/facebook.service");
+const typeorm_2 = require("@nestjs/typeorm");
+const user_entity_1 = require("./user.entity");
+const email_and_password_service_1 = require("./providers/email-and-password/email-and-password.service");
+const anonymous_service_1 = require("./providers/anonymous/anonymous.service");
+const google_service_1 = require("./providers/google/google.service");
+const facebook_service_1 = require("./providers/facebook/facebook.service");
 const mailgun_service_1 = require("../common/mailgun.service");
 const security_service_1 = require("../common/security/security.service");
+const auth_cache_1 = require("./auth.cache");
 let AuthService = class AuthService {
-    constructor(userRepository, emailAndPasswordService, anonymousService, googleService, facebookService, mailgunService, securityService) {
+    constructor(userRepository, emailAndPasswordService, anonymousService, googleService, facebookService, mailgunService, securityService, authCache) {
         this.userRepository = userRepository;
         this.emailAndPasswordService = emailAndPasswordService;
         this.anonymousService = anonymousService;
@@ -37,6 +40,7 @@ let AuthService = class AuthService {
         this.facebookService = facebookService;
         this.mailgunService = mailgunService;
         this.securityService = securityService;
+        this.authCache = authCache;
     }
     loginEmailAndPasswordUser(body) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -237,6 +241,7 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const createAnonymousUserResult = yield this.anonymousService.createAnonymousUserAndSession();
+                this.authCache.addData(createAnonymousUserResult.user);
                 const result = {
                     apiCallResult: true,
                     result: {
@@ -256,7 +261,7 @@ let AuthService = class AuthService {
             }
         });
     }
-    upgradeAnonymousUserToEmailAndPassword(userId, body) {
+    upgradeAnonymousUserToEmailAndPassword(userId, body, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const verifyResult = yield this.verifyEmailAndPasswordValidity(body);
             if (verifyResult !== 'success')
@@ -267,6 +272,7 @@ let AuthService = class AuthService {
                         email: body.email,
                         password: body.password,
                         userId,
+                        refreshToken,
                     });
                     if (upgradeAnonymousUserToEmailAndPasswordResult['message'] === 'User is not anonymous')
                         return {
@@ -323,16 +329,16 @@ let AuthService = class AuthService {
             }
         });
     }
-    linkProviderToAccount(userId, providerData) {
+    linkProviderToAccount(userId, providerData, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 switch (providerData.provider) {
                     case 'google':
-                        return yield this.linkGoogleProviderToAccount(userId, providerData);
+                        return yield this.linkGoogleProviderToAccount(userId, providerData, refreshToken);
                     case 'facebook':
-                        return yield this.linkFacebookProviderToAccount(userId, providerData);
+                        return yield this.linkFacebookProviderToAccount(userId, providerData, refreshToken);
                     case 'emailAndPassword':
-                        return yield this.linkEmailAndPasswordProviderToAccount(userId, providerData);
+                        return yield this.linkEmailAndPasswordProviderToAccount(userId, providerData, refreshToken);
                 }
             }
             catch (e) {
@@ -343,7 +349,7 @@ let AuthService = class AuthService {
             }
         });
     }
-    linkGoogleProviderToAccount(userId, socialUser) {
+    linkGoogleProviderToAccount(userId, socialUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // verify the socialUser data is good
@@ -360,7 +366,7 @@ let AuthService = class AuthService {
                 const user = yield this.findUserByUuid(userId);
                 // if provider account does not exist, add provider to user data, update database, return updated user data
                 if (googleProvider === undefined) {
-                    const updatedUser = yield this.googleService.linkProviderToExistingAccount(user, socialUser);
+                    const updatedUser = yield this.googleService.linkProviderToExistingAccount(user, socialUser, refreshToken);
                     return {
                         apiCallResult: true,
                         result: {
@@ -421,7 +427,7 @@ let AuthService = class AuthService {
             }
         });
     }
-    linkFacebookProviderToAccount(userId, socialUser) {
+    linkFacebookProviderToAccount(userId, socialUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // verify the socialUser data is good
@@ -438,7 +444,7 @@ let AuthService = class AuthService {
                 const facebookProvider = yield this.facebookService.findFacebookProviderBySocialUid(socialUser.socialUid);
                 const user = yield this.findUserByUuid(userId);
                 if (facebookProvider === undefined) {
-                    const updatedUser = yield this.facebookService.linkProviderToExistingAccount(user, socialUser);
+                    const updatedUser = yield this.facebookService.linkProviderToExistingAccount(user, socialUser, refreshToken);
                     const result = {
                         apiCallResult: true,
                         result: {
@@ -500,7 +506,7 @@ let AuthService = class AuthService {
             }
         });
     }
-    linkEmailAndPasswordProviderToAccount(userId, emailAndPasswordUser) {
+    linkEmailAndPasswordProviderToAccount(userId, emailAndPasswordUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // look up user and provider, if provider doesn't exist, validate password,
@@ -519,7 +525,7 @@ let AuthService = class AuthService {
                     const updatedUser = yield this.emailAndPasswordService.linkProviderToExistingAccount(user, {
                         email: emailAndPasswordUser.email,
                         password: emailAndPasswordUser.password,
-                    });
+                    }, refreshToken);
                     const result = {
                         apiCallResult: true,
                         result: {
@@ -599,8 +605,9 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             // merge any data from oldUser into existingUser
             // i will likely add features to this function as i create data
-            // for now there is nothing else to do but delete the old user
             this.userRepository.remove(oldUser);
+            // look up any refreshToken associated with oldUser.id and delete them.
+            yield this.securityService.deleteAllRefreshTokensAssociatedWithUser(oldUser.id);
             return existingUser;
         });
     }
@@ -613,6 +620,11 @@ let AuthService = class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const user = yield this.findUserByUuid(jwt['sub']);
+                if (user === undefined)
+                    return {
+                        apiCallResult: false,
+                        result: { error: 'could not reauthenticate, user no longer exists' },
+                    };
                 if (user.isAnonymous) {
                     return { apiCallResult: true, result: { user } };
                 }
@@ -751,10 +763,22 @@ let AuthService = class AuthService {
             }
         });
     }
+    deleteAllRefreshTokensAssociatedWithUser(uuid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.securityService.deleteAllRefreshTokensAssociatedWithUser(uuid);
+                return { apiCallResult: true, result: {} };
+            }
+            catch (e) {
+                return { apiCallResult: false, result: { error: 'error deleting refresh tokens associated with user' } };
+            }
+        });
+    }
     deleteAccount(jwt) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userToBeDeleted = yield this.userRepository.findOne(jwt.sub);
+                this.deleteAllRefreshTokensAssociatedWithUser(jwt.sub);
                 const providersToBeDeleted = [];
                 userToBeDeleted.emailAndPasswordProviderId !== null ? providersToBeDeleted.push('emailAndPassword') : null;
                 userToBeDeleted.facebookProviderId !== null ? providersToBeDeleted.push('facebook') : null;
@@ -790,14 +814,15 @@ let AuthService = class AuthService {
     }
 };
 AuthService = __decorate([
-    common_1.Component(),
-    __param(0, common_1.Inject('UserRepositoryToken')),
+    common_1.Injectable(),
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         email_and_password_service_1.EmailAndPasswordService,
         anonymous_service_1.AnonymousService,
         google_service_1.GoogleService,
         facebook_service_1.FacebookService,
         mailgun_service_1.MailgunService,
-        security_service_1.SecurityService])
+        security_service_1.SecurityService,
+        auth_cache_1.AuthCache])
 ], AuthService);
 exports.AuthService = AuthService;

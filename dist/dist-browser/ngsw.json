@@ -1,32 +1,32 @@
 {
   "configVersion": 1,
-  "index": "/index.html",
   "appData": {
     "name": "Angular Universal PWA + CLI Starter"
   },
+  "index": "/index.html",
   "assetGroups": [
     {
       "name": "app",
-      "installMode": "prefetch",
-      "updateMode": "prefetch",
+      "installMode": "lazy",
+      "updateMode": "lazy",
       "urls": [
+        "/0.js",
+        "/1.js",
+        "/2.js",
+        "/3.js",
         "/favicon.ico",
         "/index.html",
-        "/0.e154238b4009adc9d208.chunk.js",
-        "/1.35be98ed74af2cb96b9b.chunk.js",
-        "/2.708dc3597c31a4476df6.chunk.js",
-        "/3.a6f874aea55ea2ad4d0e.chunk.js",
-        "/inline.c2068e9f3b8c4d255e40.bundle.js",
-        "/main.ab648a918426f514f1d0.bundle.js",
-        "/polyfills.78da36c8ecbbd6d45914.bundle.js",
-        "/styles.864a72213b0e5c7e7668.bundle.css"
+        "/main.js",
+        "/polyfills.js",
+        "/runtime.js",
+        "/styles.css"
       ],
       "patterns": []
     },
     {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "urls": [
         "/assets/Facebook_icon.svg",
         "/assets/Gmail_icon.svg",
@@ -48,9 +48,7 @@
   "dataGroups": [
     {
       "name": "api-freshness",
-      "patterns": [
-        "\\/blog"
-      ],
+      "patterns": [],
       "strategy": "freshness",
       "maxSize": 100,
       "maxAge": 259200000,
@@ -59,9 +57,7 @@
     },
     {
       "name": "api-performance",
-      "patterns": [
-        "\\/about"
-      ],
+      "patterns": [],
       "strategy": "performance",
       "maxSize": 100,
       "maxAge": 259200000,
@@ -69,18 +65,36 @@
     }
   ],
   "hashTable": {
-    "/0.e154238b4009adc9d208.chunk.js": "719f6e510db4ec57aad11d7cecc7145bd5dd28b6",
-    "/assets/Facebook_icon.svg": "42e6efdcea5ce5a1f2ed2922d535de0231e004ec",
-    "/1.35be98ed74af2cb96b9b.chunk.js": "0370b5487718e68bcff276404e0fda9762635302",
+    "/0.js": "d2febe2299e96ab3082472556213d5c49fa66dda",
+    "/1.js": "f813fa0b9d9f0379583adb8b34b5e7178303d1f8",
+    "/2.js": "b5232af2dcd127dd81cf2973e380a1757f8af1d6",
+    "/3.js": "4eea1e64ff81b6308a3be3ccd70e4d26b1fd7c2a",
+    "/assets/Facebook_icon.svg": "cffb4ea170b2a680a658bd8e8f72ce74a06d4f21",
     "/assets/Gmail_icon.svg": "d9ec096fd0f55c9a4de29a48166d20e32b21155f",
-    "/2.708dc3597c31a4476df6.chunk.js": "fac7bf0b38c770ba3532b5faa4eab91e490dc3e1",
     "/assets/logo-512x512.png": "11fbc7458515abd3fe1fb39d5ab9e4c77d9ec3bb",
-    "/3.a6f874aea55ea2ad4d0e.chunk.js": "1b44e5d0c4d398dab4d15fdb5e1ef92e55ce85a3",
-    "/inline.c2068e9f3b8c4d255e40.bundle.js": "c37b75509162b05e044101f7e280407f826e324f",
-    "/main.ab648a918426f514f1d0.bundle.js": "a242cc742b5c2c9e3a627a62fca2122a7f537a7a",
-    "/polyfills.78da36c8ecbbd6d45914.bundle.js": "da89d9b2f630a0956c42dd75ecb5d699688562fb",
-    "/styles.864a72213b0e5c7e7668.bundle.css": "2af25bbc3ec9c106f39b4272a0302422dc3d3d9d",
     "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/index.html": "a0b18cea28f9da88279ffcb2bff72af0e9b20830"
-  }
+    "/index.html": "9d168ff9e7c665a55b3a9bcab05fcef1170bd0ac",
+    "/main.js": "f1c40711467140973d49437093e5957ce15d1e1a",
+    "/polyfills.js": "4121fc52f2593555533abae76e2b9daa9f27fce2",
+    "/runtime.js": "ca31669590bfa37757b08e58319de5ef78ba2592",
+    "/styles.css": "14d8ccbf709118ad34cdccf8da43a6b422243ed1"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^\\/]*\\.[^\\/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^\\/]*__[^\\/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^\\/]*__[^\\/]*\\/.*$"
+    }
+  ]
 }

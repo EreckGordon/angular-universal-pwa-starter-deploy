@@ -22,10 +22,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
 const fb_1 = require("fb");
-const user_entity_1 = require("../user.entity");
+const user_entity_1 = require("../../user.entity");
 const facebook_provider_entity_1 = require("./facebook-provider.entity");
-const security_service_1 = require("../../common/security/security.service");
+const security_service_1 = require("../../../common/security/security.service");
 let FacebookService = class FacebookService {
     constructor(userRepository, facebookProviderRepository, securityService) {
         this.userRepository = userRepository;
@@ -115,7 +116,7 @@ let FacebookService = class FacebookService {
             return result;
         });
     }
-    linkProviderToExistingAccount(user, socialUser) {
+    linkProviderToExistingAccount(user, socialUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedUser = user;
             const facebookProvider = new facebook_provider_entity_1.FacebookProvider();
@@ -130,6 +131,7 @@ let FacebookService = class FacebookService {
                 roles: updatedUser.roles,
                 id: updatedUser.id,
                 loginProvider: 'facebook',
+                refreshToken,
             });
             const csrfToken = yield this.securityService.createCsrfToken();
             const result = { user: updatedUser, sessionToken, csrfToken };
@@ -150,9 +152,9 @@ let FacebookService = class FacebookService {
     }
 };
 FacebookService = __decorate([
-    common_1.Component(),
-    __param(0, common_1.Inject('UserRepositoryToken')),
-    __param(1, common_1.Inject('FacebookProviderRepositoryToken')),
+    common_1.Injectable(),
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
+    __param(1, typeorm_2.InjectRepository(facebook_provider_entity_1.FacebookProvider)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         typeorm_1.Repository,
         security_service_1.SecurityService])

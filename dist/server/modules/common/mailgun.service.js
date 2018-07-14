@@ -42,6 +42,6 @@ let MailgunService = class MailgunService {
     }
 };
 MailgunService = __decorate([
-    common_1.Component()
+    common_1.Injectable()
 ], MailgunService);
 exports.MailgunService = MailgunService;

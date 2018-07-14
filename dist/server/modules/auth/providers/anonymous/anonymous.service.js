@@ -22,8 +22,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
-const user_entity_1 = require("../user.entity");
-const security_service_1 = require("../../common/security/security.service");
+const typeorm_2 = require("@nestjs/typeorm");
+const user_entity_1 = require("../../user.entity");
+const security_service_1 = require("../../../common/security/security.service");
 let AnonymousService = class AnonymousService {
     constructor(userRepository, securityService) {
         this.userRepository = userRepository;
@@ -51,14 +52,14 @@ let AnonymousService = class AnonymousService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = new user_entity_1.User();
             user.isAnonymous = true;
-            user.roles = [''];
+            user.roles = ['anon'];
             return yield this.userRepository.save(user);
         });
     }
 };
 AnonymousService = __decorate([
-    common_1.Component(),
-    __param(0, common_1.Inject('UserRepositoryToken')),
+    common_1.Injectable(),
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         security_service_1.SecurityService])
 ], AnonymousService);

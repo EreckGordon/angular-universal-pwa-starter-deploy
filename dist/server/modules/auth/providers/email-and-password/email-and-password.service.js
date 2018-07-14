@@ -22,10 +22,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
+const typeorm_2 = require("@nestjs/typeorm");
 const passwordValidator = require("password-validator");
-const user_entity_1 = require("../user.entity");
+const user_entity_1 = require("../../user.entity");
 const email_and_password_provider_entity_1 = require("./email-and-password-provider.entity");
-const security_service_1 = require("../../common/security/security.service");
+const security_service_1 = require("../../../common/security/security.service");
 let EmailAndPasswordService = class EmailAndPasswordService {
     constructor(userRepository, emailAndPasswordProviderRepository, securityService) {
         this.userRepository = userRepository;
@@ -80,7 +81,7 @@ let EmailAndPasswordService = class EmailAndPasswordService {
             return yield this.userRepository.save(user);
         });
     }
-    linkProviderToExistingAccount(user, emailAndPasswordUser) {
+    linkProviderToExistingAccount(user, emailAndPasswordUser, refreshToken) {
         return __awaiter(this, void 0, void 0, function* () {
             const updatedUser = user;
             const emailAndPasswordProvider = new email_and_password_provider_entity_1.EmailAndPasswordProvider();
@@ -92,6 +93,7 @@ let EmailAndPasswordService = class EmailAndPasswordService {
                 roles: updatedUser.roles,
                 id: updatedUser.id,
                 loginProvider: 'emailAndPassword',
+                refreshToken,
             });
             const csrfToken = yield this.securityService.createCsrfToken();
             const result = { user: updatedUser, sessionToken, csrfToken };
@@ -149,7 +151,7 @@ let EmailAndPasswordService = class EmailAndPasswordService {
             });
         });
     }
-    upgradeAnonymousUserToEmailAndPassword({ email, password, userId }) {
+    upgradeAnonymousUserToEmailAndPassword({ email, password, userId, refreshToken, }) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const passwordHash = yield this.securityService.createPasswordHash({
@@ -164,6 +166,7 @@ let EmailAndPasswordService = class EmailAndPasswordService {
                     roles: user.roles,
                     id: user.id,
                     loginProvider: 'emailAndPassword',
+                    refreshToken,
                 });
                 const csrfToken = yield this.securityService.createCsrfToken();
                 const result = { user, sessionToken, csrfToken };
@@ -210,9 +213,9 @@ let EmailAndPasswordService = class EmailAndPasswordService {
     }
 };
 EmailAndPasswordService = __decorate([
-    common_1.Component(),
-    __param(0, common_1.Inject('UserRepositoryToken')),
-    __param(1, common_1.Inject('EmailAndPasswordProviderRepositoryToken')),
+    common_1.Injectable(),
+    __param(0, typeorm_2.InjectRepository(user_entity_1.User)),
+    __param(1, typeorm_2.InjectRepository(email_and_password_provider_entity_1.EmailAndPasswordProvider)),
     __metadata("design:paramtypes", [typeorm_1.Repository,
         typeorm_1.Repository,
         security_service_1.SecurityService])

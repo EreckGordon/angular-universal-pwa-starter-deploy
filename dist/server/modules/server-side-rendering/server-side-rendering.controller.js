@@ -13,7 +13,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-let AppController = class AppController {
+let ServerSideRenderingController = class ServerSideRenderingController {
     constructor() {
         this.renderCache = {};
     }
@@ -39,8 +39,8 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
-], AppController.prototype, "routesRender", null);
-AppController = __decorate([
+], ServerSideRenderingController.prototype, "routesRender", null);
+ServerSideRenderingController = __decorate([
     common_1.Controller('*')
-], AppController);
-exports.AppController = AppController;
+], ServerSideRenderingController);
+exports.ServerSideRenderingController = ServerSideRenderingController;

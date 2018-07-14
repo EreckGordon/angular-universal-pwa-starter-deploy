@@ -7,15 +7,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
-const app_controller_1 = require("./app.controller");
 const auth_module_1 = require("./auth/auth.module");
-const hello_world_controller_1 = require("./hello-world.controller");
+const chat_module_1 = require("./chat/chat.module");
+const server_side_rendering_module_1 = require("./server-side-rendering/server-side-rendering.module");
 let ApplicationModule = class ApplicationModule {
 };
 ApplicationModule = __decorate([
     common_1.Module({
-        modules: [auth_module_1.AuthModule],
-        controllers: [app_controller_1.AppController, hello_world_controller_1.HelloWorldController],
+        // awalys put ServerSideRenderingModule as last entry in array so it does not eat any GET requests.
+        imports: [auth_module_1.AuthModule, chat_module_1.ChatModule, server_side_rendering_module_1.ServerSideRenderingModule],
     })
 ], ApplicationModule);
 exports.ApplicationModule = ApplicationModule;

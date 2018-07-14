@@ -15,8 +15,9 @@ let RolesGuard = class RolesGuard {
     constructor(reflector) {
         this.reflector = reflector;
     }
-    canActivate(req, context) {
-        const { parent, handler } = context;
+    canActivate(context) {
+        const req = context.switchToHttp().getRequest();
+        const handler = context.getHandler();
         const roles = this.reflector.get('roles', handler);
         if (!roles) {
             return true; // if you don't request a certain role, you return true so the guard doesn't break your other routes.
@@ -27,7 +28,7 @@ let RolesGuard = class RolesGuard {
     }
 };
 RolesGuard = __decorate([
-    common_1.Guard(),
+    common_1.Injectable(),
     __metadata("design:paramtypes", [core_1.Reflector])
 ], RolesGuard);
 exports.RolesGuard = RolesGuard;
